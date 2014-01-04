@@ -120,7 +120,7 @@ static void test_find_solution(void)
 }
 
 
-void test_worker(void)
+void test_reverse_string(void)
 {
   std::cout << "*** KataReverseString: begin\n";
 

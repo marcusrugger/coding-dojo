@@ -13,6 +13,7 @@ void should_eq(char *test_result, char *should_be, std::string description);
 
 /* Testers */
 
+void test_reverse_string(void);
 void test_worker(void);
 
 

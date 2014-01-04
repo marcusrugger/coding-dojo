@@ -3,14 +3,14 @@ CC=g++
 CFLAGS=-c -O3 -std=c++11
 LDFLAGS=-lncurses
 
-SOURCE_FILES =	kata.worker.cpp
+SOURCE_FILES =	kata.reverse-string.cpp
 
 
 TEST_MAIN = test.main
 
 TEST_MAIN_SOURCES =	$(TEST_MAIN).cpp	\
 										$(SOURCE_FILES)		\
-										test.worker.cpp
+										test.reverse-string.cpp
 
 TEST_MAIN_OBJECTS = $(TEST_MAIN_SOURCES:.cpp=.o)
 

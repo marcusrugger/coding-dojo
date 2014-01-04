@@ -1,8 +1,8 @@
 #include <cassert>
-#include "kata.worker.h"
+#include "kata.reverse-string.h"
 
 
-KataWorker::solution_stack KataWorker::find_solutions(char *numbers, int count)
+KataReverseString::solution_stack KataReverseString::find_solutions(char *numbers, int count)
 {
   assert(numbers != NULL);
 
@@ -18,7 +18,7 @@ KataWorker::solution_stack KataWorker::find_solutions(char *numbers, int count)
 }
 
 
-int KataWorker::match_count(char *numbers)
+int KataReverseString::match_count(char *numbers)
 {
   assert(numbers != NULL);
 

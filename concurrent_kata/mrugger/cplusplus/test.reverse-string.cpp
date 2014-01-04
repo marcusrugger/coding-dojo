@@ -5,7 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "kata.worker.h"
+#include "kata.reverse-string.h"
 #include "test.main.h"
 
 //                                          1         2         3         4         5         6 
@@ -48,43 +48,43 @@ static std::string test_to_string(char *test)
 
 static void test_match_count(void)
 {
-  std::cout << "*** KataWorker::match_count(): begin\n";
+  std::cout << "*** KataReverseString::match_count(): begin\n";
 
   {
     char test[] = { 3, 0 };
-    should_eq(KataWorker::match_count(test), 0, test_to_string(test));
+    should_eq(KataReverseString::match_count(test), 0, test_to_string(test));
   }
 
   {
     char test[] = { 3, 2, 0 };
-    should_eq(KataWorker::match_count(test), 0, test_to_string(test));
+    should_eq(KataReverseString::match_count(test), 0, test_to_string(test));
   }
 
   {
     char test[] = { 3, 2, 1, 0 };
-    should_eq(KataWorker::match_count(test), 3, test_to_string(test));
+    should_eq(KataReverseString::match_count(test), 3, test_to_string(test));
   }
 
   {
     char test[] = { 3, 2, 1, 1, 2, 3, 0 };
-    should_eq(KataWorker::match_count(test), 3, test_to_string(test));
+    should_eq(KataReverseString::match_count(test), 3, test_to_string(test));
   }
 
   {
     char test[] = { 5, 1, 1, 1, 1, 1, 2, 3, 4, 0 };
-    should_eq(KataWorker::match_count(test), 6, test_to_string(test));
+    should_eq(KataReverseString::match_count(test), 6, test_to_string(test));
   }
 
   {
     char test[] = { 3, 2, 9, 7, 0 };
-    should_eq(KataWorker::match_count(test), 0, test_to_string(test));
+    should_eq(KataReverseString::match_count(test), 0, test_to_string(test));
   }
 
-  std::cout << "*** KataWorker::match_count(): complete\n";
+  std::cout << "*** KataReverseString::match_count(): complete\n";
 }
 
 
-static void check_stack(KataWorker::solution_stack &stack, char *test, int position, int count)
+static void check_stack(KataReverseString::solution_stack &stack, char *test, int position, int count)
 {
   should_eq((int) (stack.top().position - test), position, "position");
   should_eq(stack.top().count, count, "count");
@@ -94,11 +94,11 @@ static void check_stack(KataWorker::solution_stack &stack, char *test, int posit
 
 static void test_find_solution(void)
 {
-  std::cout << "*** KataWorker::find_solutions(): begin\n";
+  std::cout << "*** KataReverseString::find_solutions(): begin\n";
 
   {
     char test[] = { 1, 2, 3, 4, 5, 5, 4, 3, 2, 1, 1, 2, 3, 4, 0 };
-    KataWorker::solution_stack stack(KataWorker::find_solutions(test, 12));
+    KataReverseString::solution_stack stack(KataReverseString::find_solutions(test, 12));
     should_eq(stack.size(), 4, test_to_string(test));
     check_stack(stack, test, 9, 2);
     check_stack(stack, test, 8, 3);
@@ -108,7 +108,7 @@ static void test_find_solution(void)
 
   {
     std::unique_ptr<char> test(reverse_string(kata_sequence));
-    KataWorker::solution_stack stack(KataWorker::find_solutions(test.get(), kata_sequence.length()));
+    KataReverseString::solution_stack stack(KataReverseString::find_solutions(test.get(), kata_sequence.length()));
     should_eq(stack.size(), 4, test_to_string(test.get()));
     check_stack(stack, test.get(), 51, 4);
     check_stack(stack, test.get(), 40, 3);
@@ -116,16 +116,16 @@ static void test_find_solution(void)
     check_stack(stack, test.get(), 32, 3);
   }
   
-  std::cout << "*** KataWorker::find_solutions(): complete\n";
+  std::cout << "*** KataReverseString::find_solutions(): complete\n";
 }
 
 
 void test_worker(void)
 {
-  std::cout << "*** KataWorker: begin\n";
+  std::cout << "*** KataReverseString: begin\n";
 
   test_match_count();
   test_find_solution();
 
-  std::cout << "*** KataWorker: complete\n\n";
+  std::cout << "*** KataReverseString: complete\n\n";
 }

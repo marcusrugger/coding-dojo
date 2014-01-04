@@ -1,11 +1,11 @@
-#ifndef __KATA_DIVVY_H__
-#define __KATA_DIVVY_H__
+#ifndef __KATA_REVERSE_STRING_H__
+#define __KATA_REVERSE_STRING_H__
 
 #include <string>
 #include <stack>
 
 
-class KataWorker
+class KataReverseString
 {
 public: /* Types */
 
@@ -26,4 +26,4 @@ public: /* Types */
 };
 
 
-#endif  // __KATA_DIVVY_H__
+#endif  // __KATA_REVERSE_STRING_H__

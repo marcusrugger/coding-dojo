@@ -1,8 +1,11 @@
+#include <cassert>
 #include "kata.worker.h"
 
 
 int KataWorker::match_count(char *numbers)
 {
+  assert(numbers != NULL);
+
   int sum(0);
   char *ptr(numbers);
   char value(*ptr++);

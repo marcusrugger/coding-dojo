@@ -6,24 +6,25 @@ LDFLAGS=-lncurses
 SOURCE_FILES =	kata.worker.cpp
 
 
-TEST_WORKER = test.worker
+TEST_MAIN = test.main
 
-TEST_WORKER_SOURCES =	$(TEST_WORKER).cpp	\
-											$(SOURCE_FILES)
+TEST_MAIN_SOURCES =	$(TEST_MAIN).cpp	\
+										$(SOURCE_FILES)		\
+										test.worker.cpp
 
-TEST_WORKER_OBJECTS = $(TEST_WORKER_SOURCES:.cpp=.o)
+TEST_MAIN_OBJECTS = $(TEST_MAIN_SOURCES:.cpp=.o)
 
 
-all:	$(TEST_WORKER)
+all:	$(TEST_MAIN)
 
 
 clean:
 	rm *.o
-	rm $(TEST_WORKER)
+	rm $(TEST_MAIN)
 
 
-$(TEST_WORKER):	$(TEST_WORKER_OBJECTS)
-	$(CC) $(TEST_WORKER_OBJECTS) $(LDFLAGS) -o $@
+$(TEST_MAIN):	$(TEST_MAIN_OBJECTS)
+	$(CC) $(TEST_MAIN_OBJECTS) $(LDFLAGS) -o $@
 
 
 .cpp.o:

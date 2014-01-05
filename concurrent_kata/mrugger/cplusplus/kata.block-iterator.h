@@ -33,6 +33,20 @@ public: /* BlockIterable interface */
 
   virtual std::unique_ptr<KataIterable> next(void);
 
+
+private:
+
+  int next_block_start(void)
+  { return _current_block + _block_size - 1; }
+
+  int next_block_end(void)
+  { return _current_block; }
+
+  int next_inner_loop_end(void)
+  { return (_current_block - _begin_of_sequence) > 8 ? _current_block - 8 : _begin_of_sequence; }
+
+  int increment_current_block(void);
+
 };
 
 

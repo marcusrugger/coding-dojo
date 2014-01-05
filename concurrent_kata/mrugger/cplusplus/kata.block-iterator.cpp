@@ -30,21 +30,23 @@ std::unique_ptr<KataIterable> BlockIterator::next(void)
     if (_is_done)
       return std::unique_ptr<KataIterable>();
 
-    block_start = _current_block + _block_size - 1;
-    block_end   = _current_block;
-    inner_end   = (_current_block - _begin_of_sequence) > 8 ? _current_block - 8 : _begin_of_sequence;
-
-    _current_block += _block_size;
-    _is_done = _current_block > _end_of_sequence;
-
+    block_start = next_block_start();
+    block_end   = next_block_end();
+    inner_end   = next_inner_loop_end();
     block_stack = new solution_stack();
+
     _queue->push(std::unique_ptr<solution_stack>(block_stack));
+    increment_current_block();
   }
 
-  if (block_start > _end_of_sequence)
-    block_start = _end_of_sequence;
+  block_start = std::min(block_start, _end_of_sequence);
 
-  std::unique_ptr<KataIterable> rv(new KataIterator(block_start, block_end, inner_end, block_stack));
+  return std::unique_ptr<KataIterator>(new KataIterator(block_start, block_end, inner_end, block_stack));
+}
 
-  return rv;
+
+int BlockIterator::increment_current_block(void)
+{
+  _current_block += _block_size;
+  _is_done = _current_block > _end_of_sequence;
 }

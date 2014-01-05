@@ -19,6 +19,14 @@ class KataSequenceIterator
     @match_map = match_map
   end
 
+  def each
+    match_iterator = self.next
+    while (!match_iterator.nil?)
+      yield match_iterator
+      match_iterator = self.next
+    end
+  end
+
   def next
     return nil if is_done
     iterator = KataCharIterator.new(@sequence, @current_position, @inner_loop_end)

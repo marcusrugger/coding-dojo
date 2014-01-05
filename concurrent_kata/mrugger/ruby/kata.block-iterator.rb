@@ -21,6 +21,14 @@ class KataBlockIterator
     @mutex = Mutex.new
   end
 
+  def each
+    sequence_iterator = self.next
+    while (!sequence_iterator.nil?)
+      yield sequence_iterator
+      sequence_iterator = self.next
+    end
+  end
+
   def next
     start_position  = 0
     end_position    = 0
@@ -40,6 +48,7 @@ class KataBlockIterator
 
     return KataSequenceIterator.new(@sequence, start_position, end_position, inner_loop_end, match_stack)
   end
+
 
   private
 

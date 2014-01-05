@@ -3,10 +3,10 @@
 
 #include <stack>
 
-#include "interface.kata-iterable.h"
+#include "kata.char-decrement-iterator.h"
 
 
-class KataIterator : public KataIterable
+class KataIterator
 {
 public:
 
@@ -31,8 +31,8 @@ public:
 
 public: /* KataIterable interface */
 
-  virtual std::unique_ptr<CharIterable> next(void);
-  virtual void push_match_count(int count);
+  std::unique_ptr<CharDecrementIterator> next(void);
+  void push_match_count(int count);
 
 };
 

@@ -4,10 +4,10 @@
 #include <queue>
 #include <mutex>
 
-#include "interface.kata-iterable.h"
+#include "kata.kata-iterator.h"
 
 
-class BlockIterator : public BlockIterable
+class BlockIterator
 {
 public:
 
@@ -31,7 +31,7 @@ public:
 
 public: /* BlockIterable interface */
 
-  virtual std::unique_ptr<KataIterable> next(void);
+  std::unique_ptr<KataIterator> next(void);
 
 
 private:

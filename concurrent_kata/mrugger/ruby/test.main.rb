@@ -68,7 +68,16 @@ iterator = KataBlockIterator.new(kata_sequence, 15, queue)
 KataWorker.find_all_matches(iterator)
 should_eq(queue.count, 5, "queue size")
 should_eq(queue.shift.count, 0, "kata_sequence, stack 1")
-should_eq(queue.shift.count, 2, "kata_sequence, stack 2")
-should_eq(queue.shift.count, 2, "kata_sequence, stack 3")
+
+match_map = queue.shift
+should_eq(match_map.count, 2, "kata_sequence, stack 2")
+check_pair(match_map.pop, 18, 3, "kata_sequence, stack 2, match 1")
+check_pair(match_map.pop, 29, 2, "kata_sequence, stack 2, match 2")
+
+match_map = queue.shift
+should_eq(match_map.count, 2, "kata_sequence, stack 3")
+check_pair(match_map.pop, 35, 2, "kata_sequence, stack 3, match 1")
+check_pair(match_map.pop, 37, 2, "kata_sequence, stack 3, match 2")
+
 should_eq(queue.shift.count, 0, "kata_sequence, stack 4")
 should_eq(queue.shift.count, 0, "kata_sequence, stack 5")

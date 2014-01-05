@@ -1,3 +1,4 @@
+require 'thread'
 require "./kata.sequence-iterator"
 
 class KataBlockIterator
@@ -9,26 +10,33 @@ class KataBlockIterator
   @current_position
   @end_of_sequence
 
+  @mutex
+
   def initialize(sequence, block_size, queue)
     @sequence = sequence
     @block_size = block_size
     @queue = queue
     @current_position = 0
     @end_of_sequence = sequence.length - 1
+    @mutex = Mutex.new
   end
 
   def next
-    return nil if is_done
-
-    puts "current_position: #{@current_position}"
-
-    start_position  = [next_start_position, @end_of_sequence].min
-    end_position    = next_end_position
-    inner_loop_end  = next_inner_loop_end
+    start_position  = 0
+    end_position    = 0
+    inner_loop_end  = 0
     match_stack     = []
 
-    @queue << match_stack
-    increment_current_position_to_next_block
+    @mutex.synchronize do
+      return nil if is_done
+
+      start_position  = [next_start_position, @end_of_sequence].min
+      end_position    = next_end_position
+      inner_loop_end  = next_inner_loop_end
+
+      @queue << match_stack
+      increment_current_position_to_next_block
+    end
 
     return KataSequenceIterator.new(@sequence, start_position, end_position, inner_loop_end, match_stack)
   end

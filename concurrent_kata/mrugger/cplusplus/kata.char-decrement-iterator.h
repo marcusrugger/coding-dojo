@@ -11,7 +11,6 @@ private:
 
   const char *_cur_ptr;
   const char *_end_ptr;
-  bool _is_done;
 
 
 public:

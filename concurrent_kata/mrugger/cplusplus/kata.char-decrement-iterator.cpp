@@ -5,7 +5,11 @@
 
 CharDecrementIterator::CharDecrementIterator(const char *start, const char *end)
 : _cur_ptr(start), _end_ptr(end)
-{}
+{
+  assert(start != NULL);
+  assert(end != NULL);
+  assert(start >= end);
+}
 
 
 char CharDecrementIterator::current(void)

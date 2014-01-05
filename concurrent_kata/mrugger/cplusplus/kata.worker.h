@@ -9,6 +9,7 @@ class KataWorker
 {
 public: /* Types */
 
+  static void find_all_solutions(BlockIterable *it);
   static void find_solutions(KataIterable *it);
 
   static int match_count(CharIterable *it);

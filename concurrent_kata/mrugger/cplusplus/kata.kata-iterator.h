@@ -10,38 +10,28 @@ class KataIterator : public KataIterable
 {
 public:
 
-  struct solution_pair
-  {
-    solution_pair(const char *p, int c) : position(p), count(c) {}
-    const char *position;
-    int count;
-  };
-
-  typedef std::stack<solution_pair> solution_pair_stack;
-
 
 private:
 
   const char *_cur_ptr;
   const char *_end_ptr;
+  const char *_inner_loop_end;
   bool _is_done;
 
-  solution_pair_stack _stack;
+  solution_stack *_stack;
 
 
 public:
 
-  KataIterator(const char *start, const char *end);
-
-  solution_pair_stack &stack(void);
+  KataIterator(const char *start,
+               const char *end,
+               const char *inner_loop_end,
+               solution_stack *stack);
 
 
 public: /* KataIterable interface */
 
-  virtual std::unique_ptr<CharIterable> current(void);
-  virtual void next(void);
-  virtual bool is_done(void);
-
+  virtual std::unique_ptr<CharIterable> next(void);
   virtual void push_match_count(int count);
 
 };

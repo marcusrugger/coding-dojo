@@ -58,6 +58,5 @@ void should_eq(char *test_result, char *should_be, std::string description)
 
 int main(int argc, char **argv)
 {
-  test_reverse_string();
   test_worker();
 }

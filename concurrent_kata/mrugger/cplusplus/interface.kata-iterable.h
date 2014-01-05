@@ -2,6 +2,19 @@
 #define __INTERFACE_KATA_ITERABLE_H__
 
 #include <memory>
+#include <stack>
+#include <queue>
+
+
+struct solution_pair
+{
+  solution_pair(const char *p, int c) : position(p), count(c) {}
+  const char *position;
+  int count;
+};
+
+typedef std::stack<solution_pair> solution_stack;
+typedef std::queue<std::unique_ptr<solution_stack>> solution_queue;
 
 
 class CharIterable
@@ -19,11 +32,17 @@ class KataIterable
 {
 public:
 
-  virtual std::unique_ptr<CharIterable> current(void) {}
-  virtual void next(void) {}
-  virtual bool is_done(void) {}
+  virtual std::unique_ptr<CharIterable> next(void) = 0;
+  virtual void push_match_count(int count) = 0;
 
-  virtual void push_match_count(int count) {}
+};
+
+
+class BlockIterable
+{
+public:
+
+  virtual std::unique_ptr<KataIterable> next(void) = 0;
 
 };
 

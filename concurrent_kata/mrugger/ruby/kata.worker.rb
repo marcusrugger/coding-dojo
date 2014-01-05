@@ -26,4 +26,12 @@ class KataWorker
     end
   end
 
+  def self.find_all_matches(iterator)
+    sequence_iterator = iterator.next
+    while (!sequence_iterator.nil?) do
+      find_matches(sequence_iterator)
+      sequence_iterator = iterator.next
+    end
+  end
+
 end

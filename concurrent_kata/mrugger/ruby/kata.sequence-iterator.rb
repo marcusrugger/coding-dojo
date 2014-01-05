@@ -26,12 +26,15 @@ class KataSequenceIterator
     return iterator
   end
 
-  def is_done
-    @current_position < @end_position
-  end
-
   def push_match(count)
     @match_map << { position: @current_position + 1, count: count }
+  end
+
+
+  private
+
+  def is_done
+    @current_position < @end_position
   end
 
 end

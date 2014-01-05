@@ -44,22 +44,7 @@ void should_eq(int test_result, int should_be, std::string description)
 }
 
 
-void should_eq(char *test_result, char *should_be, std::string description)
-{
-  if (test_result != should_be)
-  {
-    std::ostringstream ss;
-    ss << description << ": was (" << (long int) test_result << "), should be (" << (long int) should_be << ")";
-    throw std::runtime_error(ss.str());
-  }
-  else
-  {
-    std::cout << "success: " << description << "\n";
-  }
-}
-
-
-void parse_argument(argument_map *map, char *arg)
+static void parse_argument(argument_map *map, char *arg)
 {
   assert(map != NULL);
   assert(arg != NULL);
@@ -72,7 +57,7 @@ void parse_argument(argument_map *map, char *arg)
 }
 
 
-void parse_command_line(argument_map *map, int argc, char **argv)
+static void parse_command_line(argument_map *map, int argc, char **argv)
 {
   assert(map != NULL);
   assert(argv != NULL);
@@ -82,7 +67,7 @@ void parse_command_line(argument_map *map, int argc, char **argv)
 }
 
 
-std::unique_ptr<argument_map> create_argument_map_with_default_values(void)
+static std::unique_ptr<argument_map> create_argument_map_with_default_values(void)
 {
   std::unique_ptr<argument_map> map(new argument_map());
 

@@ -26,12 +26,14 @@ private:
 
 public:
 
-  BlockIterator(std::string &sequence, unsigned int block_size, solution_queue *queue);
+  BlockIterator(std::string &sequence,
+                unsigned int block_size,
+                solution_queue *queue);
 
 
 public: /* BlockIterable interface */
 
-  virtual std::unique_ptr<KataIterable> next(void);
+  virtual std::unique_ptr<SequenceIterable> next(void);
 
 
 private:

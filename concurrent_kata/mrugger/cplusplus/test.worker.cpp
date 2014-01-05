@@ -10,7 +10,7 @@
 #include <cstring>
 #include <thread>
 
-#include "kata.kata-iterator.h"
+#include "kata.sequence-iterator.h"
 #include "kata.block-iterator.h"
 #include "kata.worker.h"
 #include "test.main.h"
@@ -20,23 +20,8 @@
 //                                          1         2         3         4         5         6 
 //                                0123456789012345678901234567890123456789012345678901234567890123456789
 static std::string kata_sequence("8745648184845171326578518184151512461752149647129746915414816354846454");
-//                                               1326        415   245
+//                                               1326        415   246
 //                                                                   617
-
-
-static std::string test_to_string(char *test)
-{
-  std::string rv("{ ");
-
-  while (*test)
-  {
-    rv += (*test++) + '0';
-  }
-
-  rv += " }";
-
-  return rv;
-}
 
 
 static void check_stack(solution_stack &stack, const char *test, int position, int count)
@@ -47,154 +32,101 @@ static void check_stack(solution_stack &stack, const char *test, int position, i
 }
 
 
-static void test_find_solution(void)
+static void test_find_solution_one_block(void)
 {
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  {
-    solution_stack stack;
-    KataIterator it(kata_sequence.c_str() + kata_sequence.length() - 1, kata_sequence.c_str(), kata_sequence.c_str(), &stack);
-    KataWorker::find_solutions(&it);
-    should_eq(stack.size(), 4, kata_sequence);
-    check_stack(stack, kata_sequence.c_str(), 18, 3);
-    check_stack(stack, kata_sequence.c_str(), 29, 2);
-    check_stack(stack, kata_sequence.c_str(), 35, 2);
-    check_stack(stack, kata_sequence.c_str(), 37, 2);
-  }
-
-  {
-    solution_stack stack1;
-    solution_stack stack2;
-
-    const char *it1_start (kata_sequence.c_str() + kata_sequence.length() / 2 - 1);
-    const char *it1_end   (kata_sequence.c_str());
-    const char *it2_start (kata_sequence.c_str() + kata_sequence.length() - 1);
-    const char *it2_end   (kata_sequence.c_str() + kata_sequence.length() / 2);
-
-    KataIterator it1(it1_start, it1_end, it1_end, &stack1);
-    KataIterator it2(it2_start, it2_end, it2_end - 8, &stack2);
-
-    KataWorker::find_solutions(&it1);
-    KataWorker::find_solutions(&it2);
-
-    should_eq(stack1.size(), 2, "front half of kata sequence");
-    should_eq(stack2.size(), 2, "back half of kata sequence");
-
-    check_stack(stack1, kata_sequence.c_str(), 18, 3);
-    check_stack(stack1, kata_sequence.c_str(), 29, 2);
-
-    check_stack(stack2, kata_sequence.c_str(), 35, 2);
-    check_stack(stack2, kata_sequence.c_str(), 37, 2);
-  }
+  solution_stack stack;
+  SequenceIterator it(kata_sequence.c_str() + kata_sequence.length() - 1, kata_sequence.c_str(), kata_sequence.c_str(), &stack);
+  KataWorker::find_solutions(&it);
+  should_eq(stack.size(), 4, kata_sequence);
+  check_stack(stack, kata_sequence.c_str(), 18, 3);
+  check_stack(stack, kata_sequence.c_str(), 29, 2);
+  check_stack(stack, kata_sequence.c_str(), 35, 2);
+  check_stack(stack, kata_sequence.c_str(), 37, 2);
 
   std::cout << prefix << "complete\n";
 }
 
 
-static void test_with_block_iterator(void)
+static void test_find_solution_two_blocks(void)
 {
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  {
-    solution_queue queue;
-    BlockIterator it(kata_sequence, 0, &queue);
-    KataWorker::find_all_solutions(&it);
-    should_eq(queue.size(), 1, "queue size");
-    solution_stack *stack(queue.front().get());
-    should_eq(stack->size(), 4, "stack size");
-  }
+  solution_stack stack1;
+  solution_stack stack2;
 
-  {
-    solution_queue queue;
-    BlockIterator it(kata_sequence, 20, &queue);
+  const char *it1_start (kata_sequence.c_str() + kata_sequence.length() / 2 - 1);
+  const char *it1_end   (kata_sequence.c_str());
+  const char *it2_start (kata_sequence.c_str() + kata_sequence.length() - 1);
+  const char *it2_end   (kata_sequence.c_str() + kata_sequence.length() / 2);
 
-    KataWorker::find_all_solutions(&it);
-    should_eq(queue.size(), 4, "queue size");
+  SequenceIterator it1(it1_start, it1_end, it1_end, &stack1);
+  SequenceIterator it2(it2_start, it2_end, it2_end - 8, &stack2);
 
-    solution_stack *stack(queue.front().get());
-    should_eq(stack->size(), 1, "stack size");
-    check_stack(*stack, kata_sequence.c_str(), 18, 3);
+  KataWorker::find_solutions(&it1);
+  KataWorker::find_solutions(&it2);
 
-    queue.pop();
-    stack = queue.front().get();
-    should_eq(stack->size(), 3, "stack size");
-    check_stack(*stack, kata_sequence.c_str(), 29, 2);
-    check_stack(*stack, kata_sequence.c_str(), 35, 2);
-    check_stack(*stack, kata_sequence.c_str(), 37, 2);
+  should_eq(stack1.size(), 2, "front half of kata sequence");
+  should_eq(stack2.size(), 2, "back half of kata sequence");
 
-    queue.pop();
-    stack = queue.front().get();
-    should_eq(stack->size(), 0, "stack size");
+  check_stack(stack1, kata_sequence.c_str(), 18, 3);
+  check_stack(stack1, kata_sequence.c_str(), 29, 2);
 
-    queue.pop();
-    stack = queue.front().get();
-    should_eq(stack->size(), 0, "stack size");
-  }
+  check_stack(stack2, kata_sequence.c_str(), 35, 2);
+  check_stack(stack2, kata_sequence.c_str(), 37, 2);
 
   std::cout << prefix << "complete\n";
 }
 
 
-static void test_massive(argument_map *map)
+static void test_find_all_solutions_one_block(void)
 {
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  int thread_count    = atoi(map->at(ARGKEY_THREAD_COUNT).c_str());
-  int replicant_count = atoi(map->at(ARGKEY_REPLICANT_COUNT).c_str());
-  int block_size      = atoi(map->at(ARGKEY_BLOCK_SIZE).c_str());
+  solution_queue queue;
+  BlockIterator it(kata_sequence, 0, &queue);
+  KataWorker::find_all_solutions(&it);
+  should_eq(queue.size(), 1, "queue size");
+  solution_stack *stack(queue.front().get());
+  should_eq(stack->size(), 4, "stack size");
 
-  int sequence_size = kata_sequence.length();
-  int massive_block_size = replicant_count * sequence_size;
+  std::cout << prefix << "complete\n";
+}
 
-  block_size = block_size > 0 ? block_size : massive_block_size;
 
-  printf("thread_count:       %d\n", thread_count);
-  printf("replicant_count:    %d\n", replicant_count);
-  printf("block_size:         %d\n", block_size);
-  printf("sequence_size:      %d\n", sequence_size);
-  printf("massive_block_size: %d\n", massive_block_size);
+static void test_find_all_solutions_multiple_blocks(void)
+{
+  const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
+  std::cout << prefix << "begin\n";
 
-  std::unique_ptr<char> massive_block(new char[massive_block_size]);
-  assert(massive_block.get() != NULL);
+  solution_queue queue;
+  BlockIterator it(kata_sequence, 20, &queue);
 
-  for (int a = 0; a < replicant_count; a++)
-    memcpy(massive_block.get() + sequence_size * a, kata_sequence.c_str(), sequence_size);
+  KataWorker::find_all_solutions(&it);
+  should_eq(queue.size(), 4, "queue size");
 
-  massive_block.get()[massive_block_size - 1] = '\0';
+  solution_stack *stack(queue.front().get());
+  should_eq(stack->size(), 1, "stack size");
+  check_stack(*stack, kata_sequence.c_str(), 18, 3);
 
-  /* the test */
-  {
-    std::queue<std::unique_ptr<std::thread>> thread_pool;
-    solution_queue queue;
-    std::string sequence(massive_block.get());
-    BlockIterator it(sequence, block_size, &queue);
+  queue.pop();
+  stack = queue.front().get();
+  should_eq(stack->size(), 3, "stack size");
+  check_stack(*stack, kata_sequence.c_str(), 29, 2);
+  check_stack(*stack, kata_sequence.c_str(), 35, 2);
+  check_stack(*stack, kata_sequence.c_str(), 37, 2);
 
-    for (int a = 0; a < thread_count; a++)
-    {
-      std::thread *thread(new std::thread(KataWorker::find_all_solutions, &it));
-      thread_pool.push(std::unique_ptr<std::thread>(thread));
-    }
+  queue.pop();
+  stack = queue.front().get();
+  should_eq(stack->size(), 0, "stack size");
 
-    while (thread_pool.size() > 0)
-    {
-      thread_pool.front()->join();
-      thread_pool.pop();
-    }
-
-    should_eq(queue.size(), (massive_block_size + block_size - 1) / block_size, "queue size");
-
-    int count = 0;
-    while (queue.size() > 0)
-    {
-      count += queue.front()->size();
-      queue.pop();
-    }
-
-    should_eq(count, 4 * replicant_count, "total matches");
-  }
+  queue.pop();
+  stack = queue.front().get();
+  should_eq(stack->size(), 0, "stack size");
 
   std::cout << prefix << "complete\n";
 }
@@ -205,9 +137,10 @@ void test_worker(argument_map *map)
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  test_find_solution();
-  test_with_block_iterator();
-  test_massive(map);
+  test_find_solution_one_block();
+  test_find_solution_two_blocks();
+  test_find_all_solutions_one_block();
+  test_find_all_solutions_multiple_blocks();
 
   std::cout << prefix << "complete\n";
 }

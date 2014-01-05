@@ -28,7 +28,7 @@ public:
 };
 
 
-class KataIterable
+class SequenceIterable
 {
 public:
 
@@ -42,7 +42,7 @@ class BlockIterable
 {
 public:
 
-  virtual std::unique_ptr<KataIterable> next(void) = 0;
+  virtual std::unique_ptr<SequenceIterable> next(void) = 0;
 
 };
 

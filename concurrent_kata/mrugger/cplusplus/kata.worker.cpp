@@ -2,28 +2,29 @@
 #include "kata.worker.h"
 
 
-void KataWorker::find_all_solutions(BlockIterable *it)
+void KataWorker::find_all_solutions(BlockIterable *block_it)
 {
-  assert(it != NULL);
+  assert(block_it != NULL);
 
-  std::unique_ptr<KataIterable> kata_it(it->next());
-  while (kata_it.get() != NULL)
+  std::unique_ptr<SequenceIterable> sequence_it(block_it->next());
+  while (sequence_it.get() != NULL)
   {
-    find_solutions(kata_it.get());
-    kata_it.reset(it->next().release());
+    find_solutions(sequence_it.get());
+    sequence_it.reset(block_it->next().release());
   }
 }
 
 
-void KataWorker::find_solutions(KataIterable *it)
+void KataWorker::find_solutions(SequenceIterable *sequence_it)
 {
-  assert(it != NULL);
+  assert(sequence_it != NULL);
   
-  std::unique_ptr<CharIterable> char_it(it->next());
+  std::unique_ptr<CharIterable> char_it(sequence_it->next());
   while (char_it.get() != NULL)
   {
-    it->push_match_count(match_count(char_it.get()));
-    char_it.reset(it->next().release());
+    int count = match_count(char_it.get());
+    sequence_it->push_match_count(count);
+    char_it.reset(sequence_it->next().release());
   }
 }
 

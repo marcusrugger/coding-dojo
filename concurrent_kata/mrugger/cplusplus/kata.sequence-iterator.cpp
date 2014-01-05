@@ -1,13 +1,13 @@
 #include <cassert>
 #include <stdexcept>
-#include "kata.kata-iterator.h"
+#include "kata.sequence-iterator.h"
 #include "kata.char-decrement-iterator.h"
 
 
-KataIterator::KataIterator(const char *start,
-                           const char *end,
-                           const char *inner_loop_end,
-                           solution_stack *stack)
+SequenceIterator::SequenceIterator(const char *start,
+                                   const char *end,
+                                   const char *inner_loop_end,
+                                   solution_stack *stack)
 : _cur_ptr(start),
   _end_ptr(end),
   _inner_loop_end(inner_loop_end),
@@ -22,7 +22,7 @@ KataIterator::KataIterator(const char *start,
 }
 
 
-std::unique_ptr<CharIterable> KataIterator::next(void)
+std::unique_ptr<CharIterable> SequenceIterator::next(void)
 {
   if (_is_done)
     return std::unique_ptr<CharIterable>();
@@ -33,7 +33,7 @@ std::unique_ptr<CharIterable> KataIterator::next(void)
 }
 
 
-void KataIterator::push_match_count(int count)
+void SequenceIterator::push_match_count(int count)
 {
   if (count)
     _stack->push(solution_pair(_cur_ptr+1, count));

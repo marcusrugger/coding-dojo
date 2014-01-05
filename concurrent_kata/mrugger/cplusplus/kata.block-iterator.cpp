@@ -1,10 +1,12 @@
 #include <cassert>
 #include <stdexcept>
-#include "kata.kata-iterator.h"
+#include "kata.sequence-iterator.h"
 #include "kata.block-iterator.h"
 
 
-BlockIterator::BlockIterator(std::string &sequence, unsigned int block_size, solution_queue *queue)
+BlockIterator::BlockIterator(std::string &sequence,
+                             unsigned int block_size,
+                             solution_queue *queue)
 : _current_block(sequence.c_str()),
   _begin_of_sequence(sequence.c_str()),
   _end_of_sequence(sequence.c_str() + sequence.length() - 1),
@@ -16,7 +18,7 @@ BlockIterator::BlockIterator(std::string &sequence, unsigned int block_size, sol
 }
 
 
-std::unique_ptr<KataIterable> BlockIterator::next(void)
+std::unique_ptr<SequenceIterable> BlockIterator::next(void)
 {
   const char *block_start(NULL);
   const char *block_end(NULL);
@@ -28,7 +30,7 @@ std::unique_ptr<KataIterable> BlockIterator::next(void)
     std::lock_guard<std::mutex> lck(mtx);
 
     if (_is_done)
-      return std::unique_ptr<KataIterable>();
+      return std::unique_ptr<SequenceIterable>();
 
     block_start = std::min(next_block_start(), _end_of_sequence);
     block_end   = next_block_end();
@@ -39,7 +41,7 @@ std::unique_ptr<KataIterable> BlockIterator::next(void)
     increment_current_block_to_next_block();
   }
 
-  return std::unique_ptr<KataIterator>(new KataIterator(block_start, block_end, inner_end, block_stack));
+  return std::unique_ptr<SequenceIterable>(new SequenceIterator(block_start, block_end, inner_end, block_stack));
 }
 
 

@@ -83,5 +83,7 @@ int main(int argc, char **argv)
 {
   std::unique_ptr<argument_map> map(create_argument_map_with_default_values());
   parse_command_line(map.get(), argc, argv);
+  
   test_worker(map.get());
+  test_concurrency(map.get());
 }

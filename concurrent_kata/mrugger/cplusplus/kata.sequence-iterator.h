@@ -6,7 +6,7 @@
 #include "interface.kata-iterable.h"
 
 
-class KataIterator : public KataIterable
+class SequenceIterator : public SequenceIterable
 {
 public:
 
@@ -23,10 +23,10 @@ private:
 
 public:
 
-  KataIterator(const char *start,
-               const char *end,
-               const char *inner_loop_end,
-               solution_stack *stack);
+  SequenceIterator(const char *start,
+                   const char *end,
+                   const char *inner_loop_end,
+                   solution_stack *stack);
 
 
 public: /* KataIterable interface */

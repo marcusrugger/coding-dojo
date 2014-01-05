@@ -58,5 +58,20 @@ void should_eq(char *test_result, char *should_be, std::string description)
 
 int main(int argc, char **argv)
 {
-  test_worker();
+  int thread_count = 2;
+  int replicant_count = 1000000;
+  int block_size = 1000000;
+
+  if (argc == 4)
+  {
+    thread_count = atoi(argv[1]);
+    replicant_count = atoi(argv[2]);
+    block_size = atoi(argv[3]);
+  }
+
+  printf("Thread count:     %d\n", thread_count);
+  printf("Replicant count:  %d\n", replicant_count);
+  printf("Block size:       %d\n", block_size);
+
+  test_worker(thread_count, replicant_count, block_size);
 }

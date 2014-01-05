@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <queue>
 #include <thread>
+#include <cassert>
+#include <cstring>
+#include <thread>
 
 #include "kata.kata-iterator.h"
 #include "kata.block-iterator.h"
@@ -128,12 +131,67 @@ static void test_with_block_iterator(void)
 }
 
 
-void test_worker(void)
+void test_massive(int thread_count, int replicant_count, int block_size)
+{
+  int sequence_size = kata_sequence.length();
+  int massive_copies = replicant_count;
+  int massive_block_size = massive_copies * sequence_size;
+  std::unique_ptr<char> massive_block(new char[massive_block_size]);
+  assert(massive_block.get() != NULL);
+
+  for (int a = 0; a < massive_copies; a++)
+    memcpy(massive_block.get() + sequence_size * a, kata_sequence.c_str(), sequence_size);
+
+  massive_block.get()[massive_block_size - 1] = '\0';
+
+  /*{
+    solution_queue queue;
+    std::string sequence(massive_block.get());
+    BlockIterator it(sequence, 0, &queue);
+    KataWorker::find_all_solutions(&it);
+    should_eq(queue.size(), 1, "queue size");
+    solution_stack *stack(queue.front().get());
+    should_eq(stack->size(), 4 * massive_copies, "stack size");
+  }*/
+
+  /*{
+    solution_queue queue;
+    std::string sequence(massive_block.get());
+    BlockIterator it(sequence, 1000000, &queue);
+    KataWorker::find_all_solutions(&it);
+    should_eq(queue.size(), sequence_size, "queue size");
+  }*/
+
+  {
+    std::queue<std::unique_ptr<std::thread>> thread_pool;
+    solution_queue queue;
+    std::string sequence(massive_block.get());
+    BlockIterator it(sequence, block_size, &queue);
+
+    for (int a = 0; a < thread_count; a++)
+    {
+      std::thread *thread(new std::thread(KataWorker::find_all_solutions, &it));
+      thread_pool.push(std::unique_ptr<std::thread>(thread));
+    }
+
+    while (thread_pool.size() > 0)
+    {
+      thread_pool.front()->join();
+      thread_pool.pop();
+    }
+
+    should_eq(queue.size(), (massive_block_size + block_size - 1) / block_size, "queue size");
+  }
+}
+
+
+void test_worker(int thread_count, int replicant_count, int block_size)
 {
   std::cout << "*** KataWorker: begin\n";
 
-  test_find_solution();
-  test_with_block_iterator();
+  //test_find_solution();
+  //test_with_block_iterator();
+  test_massive(thread_count, replicant_count, block_size);
 
   std::cout << "*** KataWorker: complete\n\n";
 }

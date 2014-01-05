@@ -32,7 +32,7 @@ public:
 public: /* BlockIterable interface */
 
   virtual std::unique_ptr<KataIterable> next(void);
-  
+
 };
 
 

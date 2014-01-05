@@ -14,7 +14,7 @@ void should_eq(char *test_result, char *should_be, std::string description);
 /* Testers */
 
 void test_reverse_string(void);
-void test_worker(void);
+void test_worker(int thread_count, int replicant_count, int block_size);
 
 
 #endif  // __TEST_MAIN_H__

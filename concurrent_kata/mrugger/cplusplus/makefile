@@ -1,10 +1,13 @@
 
 CC=g++
-CFLAGS=-c -O3 -std=c++11
-LDFLAGS=-lncurses
+CFLAGS=-c -O2 -pthread -std=c++11
+LDFLAGS=-pthread -std=c++11 -Wl,--no-as-needed
 
-SOURCE_FILES =	kata.reverse-string.cpp						\
-								kata.worker.cpp										\
+#/usr/lib/x86_64-linux-gnu/libpthread.a
+
+#-lncurses
+
+SOURCE_FILES =	kata.worker.cpp										\
 								kata.char-decrement-iterator.cpp	\
 								kata.kata-iterator.cpp						\
 								kata.block-iterator.cpp
@@ -28,7 +31,7 @@ clean:
 
 
 $(TEST_MAIN):	$(TEST_MAIN_OBJECTS)
-	$(CC) $(TEST_MAIN_OBJECTS) $(LDFLAGS) -o $@
+	$(CC) $(LDFLAGS) $(TEST_MAIN_OBJECTS) -o $@
 
 
 .cpp.o:

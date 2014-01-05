@@ -2,6 +2,15 @@
 #define __TEST_MAIN_H__
 
 #include <string>
+#include <map>
+
+
+typedef std::pair<std::string, std::string> argument_pair;
+typedef std::map<std::string, std::string> argument_map;
+
+const std::string ARGKEY_THREAD_COUNT("thread_count");
+const std::string ARGKEY_REPLICANT_COUNT("replicant_count");
+const std::string ARGKEY_BLOCK_SIZE("block_size");
 
 
 /* Test helpers */
@@ -13,8 +22,7 @@ void should_eq(char *test_result, char *should_be, std::string description);
 
 /* Testers */
 
-void test_reverse_string(void);
-void test_worker(int thread_count, int replicant_count, int block_size);
+void test_worker(argument_map *map);
 
 
 #endif  // __TEST_MAIN_H__

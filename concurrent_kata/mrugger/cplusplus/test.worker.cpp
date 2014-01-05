@@ -49,7 +49,7 @@ static void check_stack(solution_stack &stack, const char *test, int position, i
 
 static void test_find_solution(void)
 {
-  std::cout << "*** KataWorker::find_solutions(): begin\n";
+  std::cout << "*** KataWorker: test_find_solution: begin\n";
 
   {
     solution_stack stack;
@@ -87,7 +87,7 @@ static void test_find_solution(void)
     check_stack(stack2, kata_sequence.c_str(), 37, 2);
   }
   
-  std::cout << "*** KataWorker::find_solutions(): complete\n";
+  std::cout << "*** KataWorker: test_find_solution: complete\n";
 }
 
 
@@ -131,15 +131,30 @@ static void test_with_block_iterator(void)
 }
 
 
-void test_massive(int thread_count, int replicant_count, int block_size)
+void test_massive(argument_map *map)
 {
+  const std::string prefix("*** KataWorker: test_massive: ");
+  std::cout << prefix << "begin\n";
+
+  int thread_count    = atoi(map->at(ARGKEY_THREAD_COUNT).c_str());
+  int replicant_count = atoi(map->at(ARGKEY_REPLICANT_COUNT).c_str());
+  int block_size      = atoi(map->at(ARGKEY_BLOCK_SIZE).c_str());
+
   int sequence_size = kata_sequence.length();
-  int massive_copies = replicant_count;
-  int massive_block_size = massive_copies * sequence_size;
+  int massive_block_size = replicant_count * sequence_size;
+
+  block_size = block_size > 0 ? block_size : massive_block_size;
+
+  printf("thread_count:       %d\n", thread_count);
+  printf("replicant_count:    %d\n", replicant_count);
+  printf("block_size:         %d\n", block_size);
+  printf("sequence_size:      %d\n", sequence_size);
+  printf("massive_block_size: %d\n", massive_block_size);
+
   std::unique_ptr<char> massive_block(new char[massive_block_size]);
   assert(massive_block.get() != NULL);
 
-  for (int a = 0; a < massive_copies; a++)
+  for (int a = 0; a < replicant_count; a++)
     memcpy(massive_block.get() + sequence_size * a, kata_sequence.c_str(), sequence_size);
 
   massive_block.get()[massive_block_size - 1] = '\0';
@@ -151,7 +166,7 @@ void test_massive(int thread_count, int replicant_count, int block_size)
     KataWorker::find_all_solutions(&it);
     should_eq(queue.size(), 1, "queue size");
     solution_stack *stack(queue.front().get());
-    should_eq(stack->size(), 4 * massive_copies, "stack size");
+    should_eq(stack->size(), 4 * replicant_count, "stack size");
   }*/
 
   /*{
@@ -182,16 +197,18 @@ void test_massive(int thread_count, int replicant_count, int block_size)
 
     should_eq(queue.size(), (massive_block_size + block_size - 1) / block_size, "queue size");
   }
+
+  std::cout << prefix << "complete\n";
 }
 
 
-void test_worker(int thread_count, int replicant_count, int block_size)
+void test_worker(argument_map *map)
 {
   std::cout << "*** KataWorker: begin\n";
 
   //test_find_solution();
   //test_with_block_iterator();
-  test_massive(thread_count, replicant_count, block_size);
+  test_massive(map);
 
   std::cout << "*** KataWorker: complete\n\n";
 }

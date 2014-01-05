@@ -1,8 +1,11 @@
 #include <cstdio>
+#include <cstring>
+#include <cassert>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
+#include <memory>
 
 #include "test.main.h"
 
@@ -56,22 +59,44 @@ void should_eq(char *test_result, char *should_be, std::string description)
 }
 
 
+void parse_argument(argument_map *map, char *arg)
+{
+  assert(map != NULL);
+  assert(arg != NULL);
+
+  char *key   = strtok(arg, "=");
+  char *value = strtok(NULL, "");
+
+  if (key && value)
+    (*map)[key] = value;
+}
+
+
+void parse_command_line(argument_map *map, int argc, char **argv)
+{
+  assert(map != NULL);
+  assert(argv != NULL);
+
+  for (int a = 1; a < argc; a++)
+    parse_argument(map, argv[a]);
+}
+
+
+std::unique_ptr<argument_map> create_argument_map_with_default_values(void)
+{
+  std::unique_ptr<argument_map> map(new argument_map());
+
+  map->insert(argument_pair(ARGKEY_THREAD_COUNT, "1"));
+  map->insert(argument_pair(ARGKEY_REPLICANT_COUNT, "1"));
+  map->insert(argument_pair(ARGKEY_BLOCK_SIZE, "0"));
+
+  return map;
+}
+
+
 int main(int argc, char **argv)
 {
-  int thread_count = 2;
-  int replicant_count = 1000000;
-  int block_size = 1000000;
-
-  if (argc == 4)
-  {
-    thread_count = atoi(argv[1]);
-    replicant_count = atoi(argv[2]);
-    block_size = atoi(argv[3]);
-  }
-
-  printf("Thread count:     %d\n", thread_count);
-  printf("Replicant count:  %d\n", replicant_count);
-  printf("Block size:       %d\n", block_size);
-
-  test_worker(thread_count, replicant_count, block_size);
+  std::unique_ptr<argument_map> map(create_argument_map_with_default_values());
+  parse_command_line(map.get(), argc, argv);
+  test_worker(map.get());
 }

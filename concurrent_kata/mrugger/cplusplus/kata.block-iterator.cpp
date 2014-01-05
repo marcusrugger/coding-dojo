@@ -16,7 +16,7 @@ BlockIterator::BlockIterator(std::string &sequence, unsigned int block_size, sol
 }
 
 
-std::unique_ptr<KataIterable> BlockIterator::next(void)
+std::unique_ptr<KataIterator> BlockIterator::next(void)
 {
   const char *block_start(NULL);
   const char *block_end(NULL);
@@ -28,7 +28,7 @@ std::unique_ptr<KataIterable> BlockIterator::next(void)
     std::lock_guard<std::mutex> lck (mtx);
 
     if (_is_done)
-      return std::unique_ptr<KataIterable>();
+      return std::unique_ptr<KataIterator>();
 
     block_start = _current_block + _block_size - 1;
     block_end   = _current_block;
@@ -44,7 +44,7 @@ std::unique_ptr<KataIterable> BlockIterator::next(void)
   if (block_start > _end_of_sequence)
     block_start = _end_of_sequence;
 
-  std::unique_ptr<KataIterable> rv(new KataIterator(block_start, block_end, inner_end, block_stack));
+  std::unique_ptr<KataIterator> rv(new KataIterator(block_start, block_end, inner_end, block_stack));
 
   return rv;
 }

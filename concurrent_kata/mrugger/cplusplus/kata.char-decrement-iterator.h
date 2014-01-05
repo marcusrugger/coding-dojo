@@ -5,7 +5,7 @@
 #include "interface.kata-iterable.h"
 
 
-class CharDecrementIterator : public CharIterable
+class CharDecrementIterator
 {
 private:
 
@@ -20,9 +20,9 @@ public:
 
 public: /* CharIterable interface */
 
-  virtual char current(void);
-  virtual void next(void);
-  virtual bool is_done(void);
+  char current(void);
+  void next(void);
+  bool is_done(void);
 
 };
 

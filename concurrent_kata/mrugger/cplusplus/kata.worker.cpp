@@ -2,11 +2,11 @@
 #include "kata.worker.h"
 
 
-void KataWorker::find_all_solutions(BlockIterable *it)
+void KataWorker::find_all_solutions(BlockIterator *it)
 {
   assert(it != NULL);
 
-  std::unique_ptr<KataIterable> kata_it(it->next());
+  std::unique_ptr<KataIterator> kata_it(it->next());
   while (kata_it.get() != NULL)
   {
     find_solutions(kata_it.get());
@@ -15,11 +15,11 @@ void KataWorker::find_all_solutions(BlockIterable *it)
 }
 
 
-void KataWorker::find_solutions(KataIterable *it)
+void KataWorker::find_solutions(KataIterator *it)
 {
   assert(it != NULL);
   
-  std::unique_ptr<CharIterable> char_it(it->next());
+  std::unique_ptr<CharDecrementIterator> char_it(it->next());
   while (char_it.get() != NULL)
   {
     it->push_match_count(match_count(char_it.get()));
@@ -28,7 +28,7 @@ void KataWorker::find_solutions(KataIterable *it)
 }
 
 
-int KataWorker::match_count(CharIterable *it)
+int KataWorker::match_count(CharDecrementIterator *it)
 {
   assert(it != NULL);
 

@@ -22,12 +22,12 @@ KataIterator::KataIterator(const char *start,
 }
 
 
-std::unique_ptr<CharIterable> KataIterator::next(void)
+std::unique_ptr<CharDecrementIterator> KataIterator::next(void)
 {
   if (_is_done)
-    return std::unique_ptr<CharIterable>();
+    return std::unique_ptr<CharDecrementIterator>();
 
-  std::unique_ptr<CharIterable> rv(new CharDecrementIterator(_cur_ptr--, _inner_loop_end));
+  std::unique_ptr<CharDecrementIterator> rv(new CharDecrementIterator(_cur_ptr--, _inner_loop_end));
   _is_done = _cur_ptr < _end_ptr;
   return rv;
 }

@@ -2,17 +2,17 @@
 #define __KATA_WORKER_H__
 
 
-#include "interface.kata-iterable.h"
+#include "kata.block-iterator.h"
 
 
 class KataWorker
 {
 public: /* Types */
 
-  static void find_all_solutions(BlockIterable *it);
-  static void find_solutions(KataIterable *it);
+  static void find_all_solutions(BlockIterator *it);
+  static void find_solutions(KataIterator *it);
 
-  static int match_count(CharIterable *it);
+  static int match_count(CharDecrementIterator *it);
 
 };
 

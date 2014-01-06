@@ -1,8 +1,6 @@
 require "colorize"
 require "./kata.match-iterator"
 require "./kata.sequence-iterator"
-require "./kata.stream-iterator"
-require "./kata.stream"
 require "./kata.worker"
 
 #                         6         5         4         3         2         1  

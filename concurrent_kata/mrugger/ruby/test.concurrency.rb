@@ -2,8 +2,8 @@ require "colorize"
 require "./kata.match-iterator"
 require "./kata.sequence-iterator"
 require "./kata.stream-iterator"
-require "./kata.stream"
 require "./kata.worker"
+require "./test.stream"
 
 #                         6         5         4         3         2         1  
 #                9876543210987654321098765432109876543210987654321098765432109876543210
@@ -41,7 +41,7 @@ THREAD_COUNT = 4
 BLOCK_SIZE = 1000
 
 queue = []
-stream = KataStream.new(kata_sequence, REPLICATION_COUNT)
+stream = TestStream.new(kata_sequence, REPLICATION_COUNT)
 iterator = KataStreamIterator.new(stream, BLOCK_SIZE, queue)
 
 thread_pool = []

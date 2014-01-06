@@ -1,5 +1,5 @@
 
-class KataStream
+class TestStream
 
   @sequence
   @replication_count

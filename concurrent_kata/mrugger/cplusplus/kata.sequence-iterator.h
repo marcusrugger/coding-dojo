@@ -13,6 +13,7 @@ public:
 
 private:
 
+  std::unique_ptr<char> _block;
   const char *_cur_ptr;
   const char *_end_ptr;
   const char *_inner_loop_end;
@@ -22,6 +23,12 @@ private:
 
 
 public:
+
+  SequenceIterator(char *block,
+                   const char *start,
+                   const char *end,
+                   const char *inner_loop_end,
+                   solution_stack *stack);
 
   SequenceIterator(const char *start,
                    const char *end,

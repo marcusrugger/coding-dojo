@@ -11,10 +11,13 @@ TestStream::TestStream(std::string &sequence, unsigned int replication_count)
 
 unsigned int TestStream::readbytes(unsigned int count, char *block)
 {
+  if (is_eof())
+    return 0;
+
   unsigned int copy_count = copy_next_block(count, block);
 
   while (copy_count < count && !is_eof())
-    copy_count += copy_next_block(count, block + copy_count);
+    copy_count += copy_next_block(count - copy_count, block + copy_count);
 
   return copy_count;
 }
@@ -28,7 +31,7 @@ void TestStream::rewind(unsigned int count)
 
 bool TestStream::is_eof(void)
 {
-  _current_position >= _total_sequence_length;
+  return _current_position >= _total_sequence_length;
 }
 
 

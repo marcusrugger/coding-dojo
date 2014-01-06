@@ -1,4 +1,4 @@
-require "./kata.char-iterator"
+require "./kata.match-iterator"
 
 class KataSequenceIterator
 
@@ -25,7 +25,7 @@ class KataSequenceIterator
 
   def next
     return nil if is_done
-    iterator = KataCharIterator.new(@sequence, @current_position)
+    iterator = KataMatchIterator.new(@sequence, @current_position)
     @current_position -= 1
     return iterator
   end

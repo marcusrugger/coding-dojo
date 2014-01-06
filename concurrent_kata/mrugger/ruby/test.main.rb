@@ -1,5 +1,5 @@
 require "colorize"
-require "./kata.char-iterator"
+require "./kata.match-iterator"
 require "./kata.sequence-iterator"
 require "./kata.stream-iterator"
 require "./kata.stream"
@@ -32,15 +32,15 @@ end
 # Test KataWorker.match_count
 
 test_sequence = "17119"
-iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1)
+iterator = KataMatchIterator.new(test_sequence, test_sequence.length - 1)
 should_eq(KataWorker.match_count(iterator), 3, "match_count: #{test_sequence}")
 
 test_sequence = "15119"
-iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1)
+iterator = KataMatchIterator.new(test_sequence, test_sequence.length - 1)
 should_eq(KataWorker.match_count(iterator), 0, "match_count: #{test_sequence}")
 
 test_sequence = "115119"
-iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1)
+iterator = KataMatchIterator.new(test_sequence, test_sequence.length - 1)
 should_eq(KataWorker.match_count(iterator), 5, "match_count: #{test_sequence}")
 
 

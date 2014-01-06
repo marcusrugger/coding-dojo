@@ -1,5 +1,5 @@
 
-class KataCharIterator
+class KataMatchIterator
 
   @sequence
   @current_position

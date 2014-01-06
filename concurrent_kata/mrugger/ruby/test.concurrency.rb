@@ -1,5 +1,5 @@
 require "colorize"
-require "./kata.char-iterator"
+require "./kata.match-iterator"
 require "./kata.sequence-iterator"
 require "./kata.stream-iterator"
 require "./kata.stream"
@@ -36,7 +36,7 @@ end
 
 puts "Begin test..."
 
-REPLICATION_COUNT = 100000
+REPLICATION_COUNT = 10000
 THREAD_COUNT = 4
 BLOCK_SIZE = 1000
 

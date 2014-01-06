@@ -17,10 +17,8 @@ class KataStreamIterator
   end
 
   def each
-    sequence_iterator = self.next
-    while (!sequence_iterator.nil?)
-      yield sequence_iterator
-      sequence_iterator = self.next
+    while (!is_done)
+      yield self.next
     end
   end
 

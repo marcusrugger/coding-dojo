@@ -16,13 +16,12 @@ class KataWorker
     sum = 0
     count = 0
 
-    value = iterator.current
-    iterator.next
+    value = iterator.next
 
-    while (!iterator.is_done && sum < value) do
-      sum += iterator.current
+    iterator.each do |char|
+      sum += char
       count += 1
-      iterator.next
+      break if sum >= value
     end
 
     sum == value ? count : 0

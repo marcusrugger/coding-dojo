@@ -16,10 +16,8 @@ class KataSequenceIterator
   end
 
   def each
-    match_iterator = self.next
-    while (!match_iterator.nil?)
-      yield match_iterator
-      match_iterator = self.next
+    while (!is_done)
+      yield self.next
     end
   end
 

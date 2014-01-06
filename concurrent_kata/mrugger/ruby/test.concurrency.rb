@@ -36,9 +36,9 @@ end
 
 puts "Begin test..."
 
-REPLICATION_COUNT = 10000
+REPLICATION_COUNT = 100000
 THREAD_COUNT = 4
-BLOCK_SIZE = 1000
+BLOCK_SIZE = REPLICATION_COUNT / THREAD_COUNT
 
 queue = []
 stream = TestStream.new(kata_sequence, REPLICATION_COUNT)
@@ -50,8 +50,6 @@ for a in 1..THREAD_COUNT
 end
 
 thread_pool.each { |thread| thread.join }
-
-#should_eq(queue.count, (massive_sequence.length / BLOCK_SIZE).ceil, "concurrency queue size")
 
 total_matches = 0
 queue.each { |map| total_matches += map.count }

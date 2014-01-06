@@ -10,9 +10,7 @@ class KataMatchIterator
   end
 
   def each
-    while (!is_done)
-      yield self.next
-    end
+    yield self.next while !is_done
   end
 
   def current

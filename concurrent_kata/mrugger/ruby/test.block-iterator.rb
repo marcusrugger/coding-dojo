@@ -36,8 +36,8 @@ end
 
 puts "Begin test..."
 
-REPLICATION_COUNT = 100000
-THREAD_COUNT = 4
+REPLICATION_COUNT = 1000
+THREAD_COUNT = 2
 BLOCK_SIZE = (kata_sequence.length * REPLICATION_COUNT) / THREAD_COUNT
 
 queue = []

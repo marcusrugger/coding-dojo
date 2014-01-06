@@ -23,6 +23,7 @@ void should_eq(int test_result, int should_be, std::string description);
 
 void test_worker(argument_map *map);
 void test_concurrency(argument_map *map);
+void test_with_stream(argument_map *map);
 
 
 #endif  // __TEST_MAIN_H__

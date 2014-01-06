@@ -42,6 +42,18 @@ SequenceIterator::SequenceIterator(const char *start,
 }
 
 
+void SequenceIterator::for_each(std::function<int(CharIterable *)> lambda)
+{
+  std::unique_ptr<CharIterable> it(next());
+  while (it.get() != NULL)
+  {
+    int count = lambda(it.get());
+    push_match_count(count);
+    it.reset(next().release());
+  }
+}
+
+
 std::unique_ptr<CharIterable> SequenceIterator::next(void)
 {
   if (_is_done)

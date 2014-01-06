@@ -11,6 +11,7 @@
 #include <thread>
 
 #include "kata.sequence-iterator.h"
+#include "kata.block-iterator.h"
 #include "kata.stream-iterator.h"
 #include "kata.worker.h"
 #include "test.main.h"
@@ -59,9 +60,9 @@ public:
 
     solution_queue queue;
     TestStream *stream = new TestStream(kata_sequence, _replicant_count);
-    StreamIterator it(std::unique_ptr<TestStream>(stream), _block_size, &queue);
+    StreamIterator *stream_it = new StreamIterator(std::unique_ptr<TestStream>(stream), _block_size, &queue);
 
-    run_the_test(&it);
+    run_the_test(stream_it);
     evaluate_the_test(queue);
 
     std::cout << prefix << "complete\n";
@@ -79,13 +80,14 @@ private:
   }
 
 
-  void run_the_test(StreamIterator *it)
+  void run_the_test(StreamIterable *stream_it)
   {
     std::queue<std::unique_ptr<std::thread>> thread_pool;
 
     for (int a = 0; a < _thread_count; a++)
     {
-      std::thread *thread(new std::thread(KataWorker::find_all_solutions, it));
+      BlockIterator *block_it = new BlockIterator(std::unique_ptr<StreamIterable>(stream_it));
+      std::thread *thread(new std::thread(KataWorker::find_solutions, block_it));
       thread_pool.push(std::unique_ptr<std::thread>(thread));
     }
 

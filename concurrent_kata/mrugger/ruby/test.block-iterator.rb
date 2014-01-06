@@ -38,7 +38,11 @@ puts "Begin test..."
 
 REPLICATION_COUNT = 10000
 THREAD_COUNT = 2
-BLOCK_SIZE = (kata_sequence.length * REPLICATION_COUNT) / THREAD_COUNT
+BLOCK_SIZE = (kata_sequence.length * REPLICATION_COUNT) / THREAD_COUNT + 8
+
+puts "Thread count:      #{THREAD_COUNT}"
+puts "Replication count: #{REPLICATION_COUNT}"
+puts "Block size:        #{BLOCK_SIZE}"
 
 queue = []
 stream = TestStream.new(kata_sequence, REPLICATION_COUNT)

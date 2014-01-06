@@ -6,9 +6,8 @@ class KataWorker
   end
 
   def self.match_count(iterator)
-    sum = 0
+    sum   = 0
     count = 0
-
     value = iterator.next
 
     iterator.each do |char|

@@ -7,7 +7,7 @@
 #include "interface.kata-iterable.h"
 
 
-class StreamIterator : public BlockIterable
+class StreamIterator : public StreamIterable
 {
 public:
 
@@ -28,8 +28,9 @@ public:
                  solution_queue *queue);
 
 
-public: /* BlockIterable interface */
+public: /* StreamIterable interface */
 
+  virtual void for_each(std::function<int(SequenceIterable *)> lambda);
   virtual std::unique_ptr<SequenceIterable> next(void);
 
 

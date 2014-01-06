@@ -4,9 +4,9 @@
 #include "test.block-iterator.h"
 
 
-BlockIterator::BlockIterator(std::string &sequence,
-                             unsigned int block_size,
-                             solution_queue *queue)
+TestBlockIterator::TestBlockIterator(std::string &sequence,
+                                     unsigned int block_size,
+                                     solution_queue *queue)
 : _current_block(sequence.c_str()),
   _begin_of_sequence(sequence.c_str()),
   _end_of_sequence(sequence.c_str() + sequence.length() - 1),
@@ -18,7 +18,7 @@ BlockIterator::BlockIterator(std::string &sequence,
 }
 
 
-std::unique_ptr<SequenceIterable> BlockIterator::next(void)
+std::unique_ptr<SequenceIterable> TestBlockIterator::next(void)
 {
   const char *block_start(NULL);
   const char *block_end(NULL);
@@ -45,7 +45,7 @@ std::unique_ptr<SequenceIterable> BlockIterator::next(void)
 }
 
 
-void BlockIterator::increment_current_block_to_next_block(void)
+void TestBlockIterator::increment_current_block_to_next_block(void)
 {
   _current_block += _block_size;
   _is_done = _current_block > _end_of_sequence;

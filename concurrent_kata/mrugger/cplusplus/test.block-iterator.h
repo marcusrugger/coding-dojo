@@ -7,7 +7,7 @@
 #include "interface.kata-iterable.h"
 
 
-class BlockIterator : public BlockIterable
+class TestBlockIterator : public StreamIterable
 {
 public:
 
@@ -26,9 +26,9 @@ private:
 
 public:
 
-  BlockIterator(std::string &sequence,
-                unsigned int block_size,
-                solution_queue *queue);
+  TestBlockIterator(std::string &sequence,
+                    unsigned int block_size,
+                    solution_queue *queue);
 
 
 public: /* BlockIterable interface */

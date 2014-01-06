@@ -11,6 +11,17 @@ StreamIterator::StreamIterator(std::unique_ptr<KataStream> stream,
 {}
 
 
+void StreamIterator::for_each(std::function<int(SequenceIterable *)> lambda)
+{
+  std::unique_ptr<SequenceIterable> sequence_it(next());
+  while (sequence_it.get() != NULL)
+  {
+    lambda(sequence_it.get());
+    sequence_it.reset(next().release());
+  }
+}
+
+
 std::unique_ptr<SequenceIterable> StreamIterator::next(void)
 {
   std::unique_ptr<char> next_block(new char[_block_size]);

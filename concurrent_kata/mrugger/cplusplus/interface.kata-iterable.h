@@ -32,16 +32,16 @@ class SequenceIterable
 {
 public:
 
-  virtual std::unique_ptr<CharIterable> next(void) = 0;
-  virtual void push_match_count(int count) = 0;
+  virtual void for_each(std::function<int(CharIterable *)> lambda) = 0;
 
 };
 
 
-class BlockIterable
+class StreamIterable
 {
 public:
 
+  virtual void for_each(std::function<int(SequenceIterable *)> lambda) = 0;
   virtual std::unique_ptr<SequenceIterable> next(void) = 0;
 
 };

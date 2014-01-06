@@ -1,5 +1,5 @@
-#ifndef __KATA_ITERATOR_H__
-#define __KATA_ITERATOR_H__
+#ifndef __KATA_SEQUENCE_ITERATOR_H__
+#define __KATA_SEQUENCE_ITERATOR_H__
 
 #include <stack>
 
@@ -38,10 +38,15 @@ public:
 
 public: /* KataIterable interface */
 
-  virtual std::unique_ptr<CharIterable> next(void);
-  virtual void push_match_count(int count);
+  virtual void for_each(std::function<int(CharIterable *)> lambda);
+
+
+private:
+
+  std::unique_ptr<CharIterable> next(void);
+  void push_match_count(int count);
 
 };
 
 
-#endif  // __KATA_ITERATOR_H__
+#endif  // __KATA_SEQUENCE_ITERATOR_H__

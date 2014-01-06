@@ -10,6 +10,7 @@ LDFLAGS=-pthread -std=c++11 -Wl,--no-as-needed
 SOURCE_FILES =	kata.worker.cpp										\
 								kata.char-decrement-iterator.cpp	\
 								kata.sequence-iterator.cpp				\
+								kata.block-iterator.cpp						\
 								kata.stream-iterator.cpp
 
 
@@ -19,7 +20,6 @@ TEST_MAIN_SOURCES =	$(TEST_MAIN).cpp					\
 										$(SOURCE_FILES)						\
 										test.worker.cpp						\
 										test.with-stream.cpp			\
-										test.block-iterator.cpp		\
 										test.stream.cpp
 
 TEST_MAIN_OBJECTS = $(TEST_MAIN_SOURCES:.cpp=.o)

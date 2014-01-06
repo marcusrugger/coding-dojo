@@ -121,21 +121,18 @@ void test_with_stream(argument_map *map)
 
   std::unique_ptr<TestWithStream> test;
 
-/*
+  /* TestWithStream(thread_count, replicant_count, block_size) */
+
   test.reset(new TestWithStream(1, 1, 0));
   test->run();
 
   test.reset(new TestWithStream(2, 1, 0));
   test->run();
 
-  test.reset(new TestWithStream(1, 1, 1));
+  test.reset(new TestWithStream(4, 1000000, 1000));
   test->run();
 
-  test.reset(new TestWithStream(10, 1000, 1));
-  test->run();
-*/
-  
-  test.reset(new TestWithStream(4, 1000000, 1000));
+  test.reset(new TestWithStream(4, 10000000, 1000000));
   test->run();
 
   std::cout << prefix << "complete\n";

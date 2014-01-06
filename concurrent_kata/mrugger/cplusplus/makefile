@@ -18,7 +18,8 @@ TEST_MAIN = test.main
 TEST_MAIN_SOURCES =	$(TEST_MAIN).cpp					\
 										$(SOURCE_FILES)						\
 										test.worker.cpp						\
-										test.concurrency.cpp
+										test.concurrency.cpp			\
+										test.stream.cpp
 
 TEST_MAIN_OBJECTS = $(TEST_MAIN_SOURCES:.cpp=.o)
 

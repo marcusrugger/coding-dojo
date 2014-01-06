@@ -16,16 +16,12 @@ class TestStream
 
   def readbytes(count, block)
     copy_count = copy_next_block(count, block)
-    count -= copy_count
-    total_copy_count = copy_count
 
-    while (count > 0 && !eof?)
-      copy_count = copy_next_block(count, block)
-      count -= copy_count
-      total_copy_count += copy_count
+    while (copy_count < count && !eof?)
+      copy_count += copy_next_block(count - copy_count, block)
     end
     
-    total_copy_count
+    copy_count
   end
 
   def rewind(count)

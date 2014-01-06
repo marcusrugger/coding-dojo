@@ -15,6 +15,13 @@ class KataSequenceIterator
     @match_map = match_map
   end
 
+  def iterate!
+    self.each do |match_it|
+      match_count = yield match_it
+      self.push_match(match_count) if match_count > 0
+    end
+  end
+
   def each
     yield self.next while !is_done
   end

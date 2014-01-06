@@ -17,8 +17,10 @@ class KataStreamIterator
   end
 
   def each
-    while (!is_done)
-      yield self.next
+    it = self.next
+    while !it.nil?
+      yield it
+      it = self.next
     end
   end
 
@@ -28,7 +30,7 @@ class KataStreamIterator
     match_stack     = []
 
     @mutex.synchronize do
-      return nil if is_done
+      return nil if @sequence.eof?
 
       end_position = @queue.size > 0 ? 8 : 0
 
@@ -38,13 +40,6 @@ class KataStreamIterator
     end
 
     return KataSequenceIterator.new(next_block, end_position, match_stack)
-  end
-
-
-  private
-
-  def is_done
-    @sequence.eof?
   end
 
 end

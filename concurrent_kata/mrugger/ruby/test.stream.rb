@@ -2,26 +2,19 @@
 class TestStream
 
   @sequence
-  @replication_count
 
   @total_sequence_length
   @current_position
 
   def initialize(sequence, replication_count)
     @sequence = sequence
-    @replication_count = replication_count
     @total_sequence_length = sequence.length * replication_count
     @current_position = 0
   end
 
   def readbytes(count, block)
-    copy_count = copy_next_block(count, block)
-
-    while (copy_count < count && !eof?)
-      copy_count += copy_next_block(count - copy_count, block)
-    end
-    
-    copy_count
+    copy_count = 0
+    copy_count += copy_next_block(count - copy_count, block) while (copy_count < count && !eof?)
   end
 
   def rewind(count)
@@ -36,10 +29,13 @@ class TestStream
   private
 
   def copy_next_block(count, block)
-    readcount = [count, @total_sequence_length - @current_position].min
-
     begin_index = @current_position % @sequence.length
-    copysize = [readcount, @sequence.length - begin_index].min
+
+    # Which ever is smaller
+    copysize = [count,                                        # the requested number of characters
+                @total_sequence_length - @current_position,   # what's left of the total replicated sequence
+                @sequence.length - begin_index].min           # what's left in the sequence
+
     end_index = begin_index + copysize - 1
 
     block << @sequence[begin_index..end_index]

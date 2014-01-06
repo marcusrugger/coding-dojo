@@ -1,11 +1,8 @@
 
 class KataWorker
 
-  def self.find_matches_save(iterator)
-    iterator.each do |match_iterator|
-      count = match_count(match_iterator)
-      iterator.push_match(count) if count > 0
-    end
+  def self.find_matches(iterator)
+    iterator.iterate! { |match_iterator| match_count(match_iterator) }
   end
 
   def self.match_count(iterator)

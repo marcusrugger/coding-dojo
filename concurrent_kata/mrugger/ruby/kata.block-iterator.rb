@@ -11,6 +11,13 @@ class KataBlockIterator
     @sequencer = sequencer
   end
 
+  def iterate!
+    self.each do |it|
+      match_count = yield it
+      @current_iterator.push_match(match_count) if match_count > 0
+    end
+  end
+
   def each
     @sequencer.each do |block_it|
       @current_iterator = block_it

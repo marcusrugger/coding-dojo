@@ -2,15 +2,10 @@
 class KataCharIterator
 
   @sequence
-  @start_position
-  @end_position
-
   @current_position
 
-  def initialize(sequence, start_position, end_position)
+  def initialize(sequence, start_position)
     @sequence = sequence
-    @start_position = start_position
-    @end_position = end_position
     @current_position = start_position
   end
 
@@ -25,7 +20,7 @@ class KataCharIterator
   end
 
   def is_done
-    @current_position < @end_position
+    @current_position < 0
   end
 
 end

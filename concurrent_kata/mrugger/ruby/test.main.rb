@@ -1,7 +1,8 @@
 require "colorize"
 require "./kata.char-iterator"
 require "./kata.sequence-iterator"
-require "./kata.block-iterator"
+require "./kata.stream-iterator"
+require "./kata.stream"
 require "./kata.worker"
 
 #                         6         5         4         3         2         1  
@@ -31,15 +32,15 @@ end
 # Test KataWorker.match_count
 
 test_sequence = "17119"
-iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1, 0)
+iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1)
 should_eq(KataWorker.match_count(iterator), 3, "match_count: #{test_sequence}")
 
 test_sequence = "15119"
-iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1, 0)
+iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1)
 should_eq(KataWorker.match_count(iterator), 0, "match_count: #{test_sequence}")
 
 test_sequence = "115119"
-iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1, 0)
+iterator = KataCharIterator.new(test_sequence, test_sequence.length - 1)
 should_eq(KataWorker.match_count(iterator), 5, "match_count: #{test_sequence}")
 
 
@@ -47,37 +48,15 @@ should_eq(KataWorker.match_count(iterator), 5, "match_count: #{test_sequence}")
 
 match_map = []
 test_sequence = "911511912"
-iterator = KataSequenceIterator.new(test_sequence, test_sequence.length - 1, 0, 0, match_map)
+iterator = KataSequenceIterator.new(test_sequence, 0, match_map)
 KataWorker.find_matches(iterator)
 should_eq(match_map.count, 3, "match_map count")
 
 match_map = []
-iterator = KataSequenceIterator.new(kata_sequence, kata_sequence.length - 1, 0, 0, match_map)
+iterator = KataSequenceIterator.new(kata_sequence, 0, match_map)
 KataWorker.find_matches(iterator)
 should_eq(match_map.count, 4, "match_map count")
 check_pair(match_map.pop, 18, 3, "kata_sequence, match 1")
 check_pair(match_map.pop, 29, 2, "kata_sequence, match 2")
 check_pair(match_map.pop, 35, 2, "kata_sequence, match 3")
 check_pair(match_map.pop, 37, 2, "kata_sequence, match 4")
-
-
-# Test KataWorker.find_all_matches
-
-queue = []
-iterator = KataBlockIterator.new(kata_sequence, 15, queue)
-KataWorker.find_all_matches(iterator)
-should_eq(queue.count, 5, "queue size")
-should_eq(queue.shift.count, 0, "kata_sequence, stack 1")
-
-match_map = queue.shift
-should_eq(match_map.count, 2, "kata_sequence, stack 2")
-check_pair(match_map.pop, 18, 3, "kata_sequence, stack 2, match 1")
-check_pair(match_map.pop, 29, 2, "kata_sequence, stack 2, match 2")
-
-match_map = queue.shift
-should_eq(match_map.count, 2, "kata_sequence, stack 3")
-check_pair(match_map.pop, 35, 2, "kata_sequence, stack 3, match 1")
-check_pair(match_map.pop, 37, 2, "kata_sequence, stack 3, match 2")
-
-should_eq(queue.shift.count, 0, "kata_sequence, stack 4")
-should_eq(queue.shift.count, 0, "kata_sequence, stack 5")

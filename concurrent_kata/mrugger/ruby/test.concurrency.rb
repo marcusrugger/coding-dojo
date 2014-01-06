@@ -1,7 +1,8 @@
 require "colorize"
 require "./kata.char-iterator"
 require "./kata.sequence-iterator"
-require "./kata.block-iterator"
+require "./kata.stream-iterator"
+require "./kata.stream"
 require "./kata.worker"
 
 #                         6         5         4         3         2         1  
@@ -28,20 +29,30 @@ def check_pair(pair, expected_position, expected_count, description)
 end
 
 
+
+
+
 # Test concurrency
 
+puts "Begin test..."
+
+REPLICATION_COUNT = 100000
+THREAD_COUNT = 4
+BLOCK_SIZE = 1000
+
 queue = []
-iterator = KataBlockIterator.new(kata_sequence, 2, queue)
+stream = KataStream.new(kata_sequence, REPLICATION_COUNT)
+iterator = KataStreamIterator.new(stream, BLOCK_SIZE, queue)
 
-a = Thread.new { KataWorker.find_all_matches(iterator) }
-b = Thread.new { KataWorker.find_all_matches(iterator) }
+thread_pool = []
+for a in 1..THREAD_COUNT
+  thread_pool << Thread.new { KataWorker.find_all_matches(iterator) }
+end
 
-a.join
-b.join
+thread_pool.each { |thread| thread.join }
 
-should_eq(queue.count, 35, "concurrency queue size")
-queue.inject { |sum,x| sum + x }
+#should_eq(queue.count, (massive_sequence.length / BLOCK_SIZE).ceil, "concurrency queue size")
 
 total_matches = 0
 queue.each { |map| total_matches += map.count }
-should_eq(total_matches, 4, "concurrency matches")
+should_eq(total_matches, 4 * REPLICATION_COUNT, "concurrency matches")

@@ -11,9 +11,9 @@
 #include <thread>
 
 #include "kata.sequence-iterator.h"
-#include "kata.block-iterator.h"
 #include "kata.worker.h"
 #include "test.main.h"
+#include "test.block-iterator.h"
 
 //                                         6         5         4         3         2         1  
 //                                9876543210987654321098765432109876543210987654321098765432109876543210
@@ -139,8 +139,8 @@ void test_worker(argument_map *map)
 
   test_find_solution_one_block();
   test_find_solution_two_blocks();
-  test_find_all_solutions_one_block();
-  test_find_all_solutions_multiple_blocks();
+  //test_find_all_solutions_one_block();
+  //test_find_all_solutions_multiple_blocks();
 
   std::cout << prefix << "complete\n";
 }

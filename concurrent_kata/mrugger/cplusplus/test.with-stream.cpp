@@ -132,8 +132,5 @@ void test_with_stream(argument_map *map)
   test.reset(new TestWithStream(4, 1000000, 1000));
   test->run();
 
-  test.reset(new TestWithStream(4, 10000000, 1000000));
-  test->run();
-
   std::cout << prefix << "complete\n";
 }

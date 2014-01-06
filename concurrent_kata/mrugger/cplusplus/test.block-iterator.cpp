@@ -1,7 +1,7 @@
 #include <cassert>
 #include <stdexcept>
 #include "kata.sequence-iterator.h"
-#include "kata.block-iterator.h"
+#include "test.block-iterator.h"
 
 
 BlockIterator::BlockIterator(std::string &sequence,

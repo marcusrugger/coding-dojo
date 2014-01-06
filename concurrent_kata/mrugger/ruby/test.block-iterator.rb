@@ -1,6 +1,6 @@
 require "colorize"
 require "./kata.match-iterator"
-require "./kata.sequence-iterator"
+require "./kata.block-iterator"
 require "./kata.stream-iterator"
 require "./kata.worker"
 require "./test.stream"
@@ -37,16 +37,19 @@ end
 puts "Begin test..."
 
 REPLICATION_COUNT = 100000
-THREAD_COUNT = 1
-BLOCK_SIZE = (kata_sequence.length * REPLICATION_COUNT) / 4 #THREAD_COUNT
+THREAD_COUNT = 4
+BLOCK_SIZE = (kata_sequence.length * REPLICATION_COUNT) / THREAD_COUNT
 
 queue = []
 stream = TestStream.new(kata_sequence, REPLICATION_COUNT)
-iterator = KataStreamIterator.new(stream, BLOCK_SIZE, queue)
+stream_iterator = KataStreamIterator.new(stream, BLOCK_SIZE, queue)
 
 thread_pool = []
 for a in 1..THREAD_COUNT
-  thread_pool << Thread.new { KataWorker.find_all_matches(iterator) }
+  thread_pool << Thread.new do
+    block_iterator = KataBlockIterator.new(stream_iterator)
+    KataWorker.find_matches(block_iterator)
+  end
 end
 
 thread_pool.each { |thread| thread.join }

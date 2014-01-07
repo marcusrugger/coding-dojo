@@ -31,7 +31,7 @@ end
 puts "Starting test..."
 
 THREAD_COUNT = 4
-SEQUENCE_LENGTH = 10000000
+SEQUENCE_LENGTH = 1000000
 
 thread_pool = []
 iterator_pool = []
@@ -42,9 +42,7 @@ for a in 1..THREAD_COUNT
   match_map = []
   iterator = KataUnboundedSequenceIterator.new(sequencer, match_map, SEQUENCE_LENGTH-1, 0, 0)
   iterator_pool << iterator
-  thread_pool << Thread.new do
-    KataWorker.find_matches(iterator)
-  end
+  thread_pool << Thread.new { iterator.iterate! { |it| KataWorker.match_count(it) } }
 end
 
 thread_pool.each { |t| t.join }
@@ -52,38 +50,3 @@ thread_pool.each { |t| t.join }
 iterator_pool.each { |it| puts "stack size: #{iterator.match_map.size}"}
 
 puts "All done."
-
-
-=begin
-# Test KataWorker.match_count
-
-test_sequence = "17119"
-iterator = KataMatchIterator.new(test_sequence, test_sequence.length - 1)
-should_eq(KataWorker.match_count(iterator), 3, "match_count: #{test_sequence}")
-
-test_sequence = "15119"
-iterator = KataMatchIterator.new(test_sequence, test_sequence.length - 1)
-should_eq(KataWorker.match_count(iterator), 0, "match_count: #{test_sequence}")
-
-test_sequence = "115119"
-iterator = KataMatchIterator.new(test_sequence, test_sequence.length - 1)
-should_eq(KataWorker.match_count(iterator), 5, "match_count: #{test_sequence}")
-
-
-# Test KataWorker.find_matches
-
-match_map = []
-test_sequence = "911511912"
-iterator = KataSequenceIterator.new(test_sequence, 0, match_map)
-KataWorker.find_matches(iterator)
-should_eq(match_map.count, 3, "match_map count")
-
-match_map = []
-iterator = KataSequenceIterator.new(kata_sequence, 0, match_map)
-KataWorker.find_matches(iterator)
-should_eq(match_map.count, 4, "match_map count")
-check_pair(match_map.pop, 18, 3, "kata_sequence, match 1")
-check_pair(match_map.pop, 29, 2, "kata_sequence, match 2")
-check_pair(match_map.pop, 35, 2, "kata_sequence, match 3")
-check_pair(match_map.pop, 37, 2, "kata_sequence, match 4")
-=end

@@ -10,9 +10,9 @@ typedef std::pair<int, int> match_pair;
 typedef std::stack<match_pair> match_stack;
 
 
-/**** TestUnboundedCharIterator ***************************************************************************************/
+/**** KataUnboundedCharIterator ***************************************************************************************/
 
-class TestUnboundedCharIterator : public CharIterable
+class KataUnboundedCharIterator : public CharIterable
 {
 public:
 
@@ -22,7 +22,7 @@ public:
 
 public:
 
-  TestUnboundedCharIterator(Sequencer *sequence, int start, int end)
+  KataUnboundedCharIterator(Sequencer *sequence, int start, int end)
   : _sequence(sequence), _current_position(start), _end_position(end)
   {}
 
@@ -44,9 +44,9 @@ private:
 };
 
 
-/**** TestUnboundedSequenceIterator ***********************************************************************************/
+/**** KataUnboundedSequenceIterator ***********************************************************************************/
 
-class TestUnboundedSequenceIterator : public SequenceIterable
+class KataUnboundedSequenceIterator : public SequenceIterable
 {
 public:
 
@@ -60,7 +60,7 @@ public:
 
 public:
 
-  TestUnboundedSequenceIterator(Sequencer *sequence, std::stack<match_pair> *stack, int start, int end, int match_end)
+  KataUnboundedSequenceIterator(Sequencer *sequence, std::stack<match_pair> *stack, int start, int end, int match_end)
   : _sequence(sequence),
     _stack(stack),
     _current_position(start),
@@ -92,7 +92,7 @@ private:
   CharIterable *next(void)
   {
     if (is_done()) return NULL;
-    return new TestUnboundedCharIterator(_sequence, _current_position--, _match_end);
+    return new KataUnboundedCharIterator(_sequence, _current_position--, _match_end);
   }
 
 
@@ -107,7 +107,7 @@ private:
 
 /**** TestSequenceUnboundedIterator ***********************************************************************************/
 
-class TestUnboundedSequencer : public Sequencer
+class KataUnboundedSequencer : public Sequencer
 {
 public:
 
@@ -117,7 +117,7 @@ public:
   std::mutex _mtx;
   std::stack<match_pair> _stack;
 
-  TestUnboundedSequencer(std::string string, int replication_count)
+  KataUnboundedSequencer(std::string string, int replication_count)
   : _sequence(string), _total_sequence_size(string.length() * replication_count)
   {}
 

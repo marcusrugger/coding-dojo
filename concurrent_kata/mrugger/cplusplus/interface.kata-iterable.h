@@ -6,17 +6,6 @@
 #include <queue>
 
 
-struct solution_pair
-{
-  solution_pair(const char *p, int c) : position(p), count(c) {}
-  const char *position;
-  int count;
-};
-
-typedef std::stack<solution_pair> solution_stack;
-typedef std::queue<std::unique_ptr<solution_stack>> solution_queue;
-
-
 class CharIterable
 {
 public:

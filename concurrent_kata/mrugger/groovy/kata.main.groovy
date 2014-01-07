@@ -1,5 +1,14 @@
 
 
+//                         6         5         4         3         2         1  
+//                9876543210987654321098765432109876543210987654321098765432109876543210
+//                          1         2         3         4         5         6 
+//                0123456789012345678901234567890123456789012345678901234567890123456789
+kata_sequence =  "8745648184845171326578518184151512461752149647129746915414816354846454"
+//                               1326        415   246
+//                                                   617
+
+
 class MatchIterator
 {
   def sequence
@@ -12,7 +21,7 @@ class MatchIterator
 
   def next() {
     if (is_done()) return '\0'
-    return ((int) sequence[position--]) - 48
+    return sequence.at(position--)
   }
 
   def is_done() { return position < 0 }
@@ -33,7 +42,7 @@ class SequenceIterator
     def it = next()
     while (it != null) {
       def count = yield(it)
-      println "SequenceIterator: " + count
+      if (count > 0) print "${(position+1)}, "
       it = next()
     }
   }
@@ -45,6 +54,50 @@ class SequenceIterator
 
   def is_done() { return position < 0 }
 }
+
+
+class StringSequencer
+{
+  def sequence_string
+
+  StringSequencer(string) {
+    sequence_string = string
+  }
+
+  def size() {
+    return sequence_string.size()
+  }
+
+  def at(idx) {
+    return ((int) sequence_string[idx]) - 48
+  }
+}
+
+
+class UnboundedStringSequencer
+{
+  def sequence_string
+  def total_sequence_size
+
+  UnboundedStringSequencer(string, total_size) {
+    sequence_string = string
+    total_sequence_size = total_size
+  }
+
+  def size() {
+    return total_sequence_size
+  }
+
+  def at(idx) {
+    def sidx = idx % sequence_string.size()
+    return ((int) sequence_string[sidx]) - 48
+  }
+}
+
+
+
+
+
 
 
 match_count = { iterator ->
@@ -64,6 +117,10 @@ match_count = { iterator ->
 
 def find_solutions(iterator) { iterator.each(match_count) }
 
-str = new String("123123123123123123123")
+//str = new String(kata_sequence)
+str = new UnboundedStringSequencer(kata_sequence, 10000)
+
 sit = new SequenceIterator(str)
-find_solutions(sit)
+t = Thread.start { find_solutions(sit) }
+t.join()
+

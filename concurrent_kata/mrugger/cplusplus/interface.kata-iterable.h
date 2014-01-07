@@ -19,7 +19,7 @@ class SequenceIterable
 {
 public:
 
-  virtual void for_each(std::function<int(CharIterable *)> lambda) = 0;
+  virtual void for_each(std::function<int(CharIterable *)> yield) = 0;
 
 };
 
@@ -29,7 +29,6 @@ class Sequencer
 public:
 
   virtual char at(int idx) = 0;
-  virtual void push_match(int idx, int count) = 0;
   
 };
 

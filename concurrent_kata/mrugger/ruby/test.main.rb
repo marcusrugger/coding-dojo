@@ -1,7 +1,6 @@
-require "colorize"
-require "./kata.match-iterator"
-require "./kata.sequence-iterator"
-require "./kata.worker"
+require 'colorize'
+require './kata.unbounded-iterators'
+require './kata.worker'
 
 #                         6         5         4         3         2         1  
 #                9876543210987654321098765432109876543210987654321098765432109876543210
@@ -27,6 +26,31 @@ def check_pair(pair, expected_position, expected_count, description)
 end
 
 
+# Test KataWorker.find_matches
+
+puts "Starting test..."
+
+THREAD_COUNT = 4
+SEQUENCE_LENGTH = 100000
+
+thread_pool = []
+
+sequencer = KataUnboundedSequencer.new(kata_sequence, SEQUENCE_LENGTH)
+
+for a in 1..THREAD_COUNT
+  thread_pool << Thread.new do
+    match_map = []
+    iterator = KataUnboundedSequenceIterator.new(sequencer, match_map, SEQUENCE_LENGTH-1, 0, 0)
+    KataWorker.find_matches(iterator)
+  end
+end
+
+thread_pool.each { |t| t.join }
+
+puts "All done."
+
+
+=begin
 # Test KataWorker.match_count
 
 test_sequence = "17119"
@@ -58,3 +82,4 @@ check_pair(match_map.pop, 18, 3, "kata_sequence, match 1")
 check_pair(match_map.pop, 29, 2, "kata_sequence, match 2")
 check_pair(match_map.pop, 35, 2, "kata_sequence, match 3")
 check_pair(match_map.pop, 37, 2, "kata_sequence, match 4")
+=end

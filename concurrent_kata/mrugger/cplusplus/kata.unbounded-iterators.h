@@ -71,12 +71,12 @@ public:
 
 public: /* KataIterable interface */
 
-  virtual void for_each(std::function<int(CharIterable *)> lambda)
+  virtual void for_each(std::function<int(CharIterable *)> yield)
   {
     std::unique_ptr<CharIterable> it(next());
     while (it.get() != NULL)
     {
-      int count = lambda(it.get());
+      int count = yield(it.get());
       push_match_count(count);
       it.reset(next());
     }
@@ -125,14 +125,7 @@ public: /* Sequencer interface */
 
   virtual char at(int idx)
   { return _sequence[idx % _sequence.length()] - '0'; }
-
-
-  virtual void push_match(int idx, int count)
-  {
-    std::lock_guard<std::mutex> lck(_mtx);
-    _stack.push(match_pair(idx, count));
-  }
-
+  
 };
 
 #endif  // __KATA_UNBOUNDED_ITERATORS_H__

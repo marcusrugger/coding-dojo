@@ -31,6 +31,8 @@ end
 
 class KataUnboundedSequenceIterator
 
+  attr_accessor :match_map
+
   @sequence
   @match_map
 

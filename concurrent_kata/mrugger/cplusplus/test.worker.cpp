@@ -79,12 +79,45 @@ static void test_find_solution_with_unbounded(int thread_count, int sequence_siz
 }
 
 
+static void test_find_solution_with_no_overap(int thread_count, int sequence_size)
+{
+  const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
+  std::cout << prefix << "begin\n";
+
+  KataUnboundedSequencer sequencer(kata_sequence, sequence_size);
+  std::queue<std::unique_ptr<KataUnboundedSequenceIterator>> queue;
+  std::queue<std::unique_ptr<std::thread>> thread_pool;
+
+  for (int a = 0; a < thread_count; a++)
+  {
+    int start       = sequence_size - 1;
+    int stop        = 0;
+    int match_stop  = 0;
+    thread_pool.push(std::unique_ptr<std::thread>(create_iterator(&queue, &sequencer, start, stop, match_stop)));
+  }
+
+  while (thread_pool.size() > 0)
+  {
+    thread_pool.front()->join();
+    thread_pool.pop();
+  }
+
+  while (queue.size() > 0)
+  {
+    printf("stack size: %lu\n", queue.front()->_stack->size());
+    queue.pop();
+  }
+
+  std::cout << prefix << "complete\n";
+}
+
+
 void test_worker(argument_map *map)
 {
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  test_find_solution_with_unbounded(4, 1000000000);
+  test_find_solution_with_no_overap(4, 10000000);
 
   std::cout << prefix << "complete\n";
 }

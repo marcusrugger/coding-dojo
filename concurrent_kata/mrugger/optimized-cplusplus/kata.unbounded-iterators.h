@@ -54,12 +54,16 @@ public:
 
 public:
 
-  KataUnboundedCharIterator(KataUnboundedSequencer *sequencer, int start, int end)
-  : _sequencer(sequencer), _current_position(start), _end_position(end)
+  KataUnboundedCharIterator(KataUnboundedSequencer *sequencer)
+  : _sequencer(sequencer), _current_position(-1), _end_position(0)
   {}
 
 
 public: /* CharIterable interface */
+
+  void reset(int start, int end)
+  { _current_position = start; _end_position = end; }
+
 
   char next(void)
   {
@@ -86,6 +90,8 @@ public:
 
   KataUnboundedSequencer *_sequencer;
 
+  std::unique_ptr<KataUnboundedCharIterator> _char_iterator;
+
   int _current_position;
   int _end_position;
   int _match_end;
@@ -97,7 +103,8 @@ public:
     _stack(stack),
     _current_position(start),
     _end_position(end),
-    _match_end(match_end)
+    _match_end(match_end),
+    _char_iterator(new KataUnboundedCharIterator(_sequencer))
   {}
 
 
@@ -105,13 +112,13 @@ public: /* KataIterable interface */
 
   void for_each(std::function<int(KataUnboundedCharIterator *)> yield)
   {
-    std::unique_ptr<KataUnboundedCharIterator> it(next());
-    while (it.get() != NULL)
+    do
     {
-      int count = yield(it.get());
+      _char_iterator->reset(_current_position--, _match_end);
+      int count = yield(_char_iterator.get());
       push_match_count(count);
-      it.reset(next());
     }
+    while (!is_done());
   }
 
 
@@ -119,13 +126,6 @@ private:
 
   bool is_done(void)
   { return _current_position < _end_position; }
-
-
-  KataUnboundedCharIterator *next(void)
-  {
-    if (is_done()) return NULL;
-    return new KataUnboundedCharIterator(_sequencer, _current_position--, _match_end);
-  }
 
 
   void push_match_count(int count)

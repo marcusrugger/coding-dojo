@@ -13,7 +13,7 @@
 #include "kata.sequence-iterator.h"
 #include "kata.worker.h"
 #include "test.main.h"
-#include "test.block-iterator.h"
+#include "test.unbounded-iterators.h"
 
 //                                         6         5         4         3         2         1  
 //                                9876543210987654321098765432109876543210987654321098765432109876543210
@@ -82,13 +82,39 @@ static void test_find_solution_two_blocks(void)
 }
 
 
+static void test_find_solution_with_unbounded(int thread_count)
+{
+  const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
+  std::cout << prefix << "begin\n";
+
+  std::queue<std::unique_ptr<std::thread>> thread_pool;
+
+  for (int a = 0; a < thread_count; a++)
+  {
+    solution_stack *stack = new solution_stack();
+    TestSequenceUnboundedIterator *it = new TestSequenceUnboundedIterator(kata_sequence, 2500000, stack);
+    std::thread *thread(new std::thread(KataWorker::find_solutions, it));
+    thread_pool.push(std::unique_ptr<std::thread>(thread));
+  }
+
+  while (thread_pool.size() > 0)
+  {
+    thread_pool.front()->join();
+    thread_pool.pop();
+  }
+
+  std::cout << prefix << "complete\n";
+}
+
+
 void test_worker(argument_map *map)
 {
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  test_find_solution_one_block();
-  test_find_solution_two_blocks();
+  //test_find_solution_one_block();
+  //test_find_solution_two_blocks();
+  test_find_solution_with_unbounded(4);
 
   std::cout << prefix << "complete\n";
 }

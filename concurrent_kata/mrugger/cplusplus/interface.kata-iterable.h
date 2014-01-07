@@ -21,9 +21,7 @@ class CharIterable
 {
 public:
 
-  virtual char current(void) = 0;
-  virtual void next(void) = 0;
-  virtual bool is_done(void) = 0;
+  virtual char next(void) = 0;
 
 };
 
@@ -42,7 +40,6 @@ class StreamIterable
 public:
 
   virtual void for_each(std::function<int(SequenceIterable *)> lambda) = 0;
-  virtual std::unique_ptr<SequenceIterable> next(void) = 0;
 
 };
 

@@ -49,17 +49,16 @@ void SequenceIterator::for_each(std::function<int(CharIterable *)> lambda)
   {
     int count = lambda(it.get());
     push_match_count(count);
-    it.reset(next().release());
+    it.reset(next());
   }
 }
 
 
-std::unique_ptr<CharIterable> SequenceIterator::next(void)
+CharIterable *SequenceIterator::next(void)
 {
-  if (_is_done)
-    return std::unique_ptr<CharIterable>();
+  if (_is_done) return NULL;
 
-  std::unique_ptr<CharIterable> rv(new CharDecrementIterator(_cur_ptr--, _inner_loop_end));
+  CharIterable *rv = new CharDecrementIterator(_cur_ptr--, _inner_loop_end);
   _is_done = _cur_ptr < _end_ptr;
   return rv;
 }

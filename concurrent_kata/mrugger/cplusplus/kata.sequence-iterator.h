@@ -43,7 +43,7 @@ public: /* KataIterable interface */
 
 private:
 
-  std::unique_ptr<CharIterable> next(void);
+  CharIterable *next(void);
   void push_match_count(int count);
 
 };

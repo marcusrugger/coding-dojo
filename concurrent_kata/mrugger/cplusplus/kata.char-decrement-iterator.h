@@ -20,9 +20,12 @@ public:
 
 public: /* CharIterable interface */
 
-  virtual char current(void);
-  virtual void next(void);
-  virtual bool is_done(void);
+  virtual char next(void);
+
+
+private:
+
+  bool is_done(void);
 
 };
 

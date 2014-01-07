@@ -14,14 +14,14 @@ int KataWorker::match_count(CharIterable *it)
 
   int sum     = 0;
   int count   = 0;
-  char value  = it->current();
+  char value  = it->next();
 
-  it->next();
-  while (!it->is_done() && sum < value)
+  char c = it->next();
+  while (c != '\0' && sum < value)
   {
-    sum += it->current();
+    sum += c;
     count++;
-    it->next();
+    c = it->next();
   }
 
   return (sum == value) ? count : 0;

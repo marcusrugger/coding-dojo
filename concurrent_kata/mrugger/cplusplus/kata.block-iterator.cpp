@@ -12,10 +12,6 @@ BlockIterator::BlockIterator(std::unique_ptr<StreamIterable> stream_iterator)
 
 void BlockIterator::for_each(std::function<int(CharIterable *)> lambda)
 {
-  std::unique_ptr<SequenceIterable> sequence_it(_stream_iterator->next());
-  while (sequence_it.get() != NULL)
-  {
-    sequence_it->for_each(lambda);
-    sequence_it.reset(_stream_iterator->next().release());
-  }
+  _stream_iterator->for_each( [lambda] (SequenceIterable *sequence_it) -> int
+      { sequence_it->for_each(lambda); });
 }

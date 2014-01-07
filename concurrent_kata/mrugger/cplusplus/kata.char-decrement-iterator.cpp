@@ -12,21 +12,10 @@ CharDecrementIterator::CharDecrementIterator(const char *start, const char *end)
 }
 
 
-char CharDecrementIterator::current(void)
+char CharDecrementIterator::next(void)
 {
-  if (is_done())
-    throw std::runtime_error("CharDecrementIterator::current: iterator out of range");
-
-  return (*_cur_ptr) - '0';
-}
-
-
-void CharDecrementIterator::next(void)
-{
-  if (is_done())
-    throw std::runtime_error("CharDecrementIterator::next: iterator out of range");
-
-  _cur_ptr--;
+  if (is_done()) return '\0';
+  return (*_cur_ptr--) - '0';
 }
 
 

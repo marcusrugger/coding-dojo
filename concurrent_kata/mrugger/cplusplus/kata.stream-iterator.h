@@ -9,9 +9,6 @@
 
 class StreamIterator : public StreamIterable
 {
-public:
-
-
 private:
 
   std::unique_ptr<KataStream> _stream;
@@ -31,11 +28,11 @@ public:
 public: /* StreamIterable interface */
 
   virtual void for_each(std::function<int(SequenceIterable *)> lambda);
-  virtual std::unique_ptr<SequenceIterable> next(void);
 
 
 private:
 
+  SequenceIterable *next(void);
   bool is_done(void);
 
 };

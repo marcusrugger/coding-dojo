@@ -85,5 +85,5 @@ int main(int argc, char **argv)
   parse_command_line(map.get(), argc, argv);
   
   test_worker(map.get());
-  test_with_stream(map.get());
+  //test_with_stream(map.get());
 }

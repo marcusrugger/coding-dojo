@@ -48,7 +48,7 @@ public:
   TestWithStream(int thread_count, int replicant_count, unsigned int block_size)
   : _thread_count(thread_count), _replicant_count(replicant_count)
   {
-    _block_size = block_size > 0 ? block_size : kata_sequence.length() * replicant_count;
+    _block_size = block_size > 0 ? block_size + 8 : kata_sequence.length() * replicant_count;
   }
 
 

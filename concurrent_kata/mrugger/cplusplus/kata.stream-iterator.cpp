@@ -17,12 +17,12 @@ void StreamIterator::for_each(std::function<int(SequenceIterable *)> lambda)
   while (sequence_it.get() != NULL)
   {
     lambda(sequence_it.get());
-    sequence_it.reset(next().release());
+    sequence_it.reset(next());
   }
 }
 
 
-std::unique_ptr<SequenceIterable> StreamIterator::next(void)
+SequenceIterable *StreamIterator::next(void)
 {
   std::unique_ptr<char> next_block(new char[_block_size]);
   std::unique_ptr<solution_stack> block_stack(new solution_stack());
@@ -35,8 +35,7 @@ std::unique_ptr<SequenceIterable> StreamIterator::next(void)
   {
     std::lock_guard<std::mutex> lck(_mtx);
 
-    if (is_done())
-      return std::unique_ptr<SequenceIterable>();
+    if (is_done()) return NULL;
 
     bool is_first_block = _queue->size() == 0;
 
@@ -49,7 +48,7 @@ std::unique_ptr<SequenceIterable> StreamIterator::next(void)
     inner_loop_end  = next_block.get();
   }
 
-  return std::unique_ptr<SequenceIterable>(new SequenceIterator(next_block.release(), start_position, end_position, inner_loop_end, stack));
+  return new SequenceIterator(next_block.release(), start_position, end_position, inner_loop_end, stack);
 }
 
 

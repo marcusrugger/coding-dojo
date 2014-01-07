@@ -42,7 +42,7 @@ class SequenceIterator
     def it = next()
     while (it != null) {
       def count = yield(it)
-      if (count > 0) print "${(position+1)}, "
+      //if (count > 0) print "${(position+1)}, "
       it = next()
     }
   }
@@ -115,12 +115,26 @@ match_count = { iterator ->
   return sum == value ? count : 0;
 }
 
-def find_solutions(iterator) { iterator.each(match_count) }
-
 //str = new String(kata_sequence)
-str = new UnboundedStringSequencer(kata_sequence, 10000)
+str = new UnboundedStringSequencer(kata_sequence, 1000000)
 
-sit = new SequenceIterator(str)
-t = Thread.start { find_solutions(sit) }
-t.join()
+thread_pool = []
+for (a = 0; a < 4; a++) {
+  sit = new SequenceIterator(str)
+  t = Thread.start { sit.each(match_count) }
+  thread_pool.push(t)
+}
 
+thread_pool.each { t -> t.join() }
+
+
+a = [ 1, 2, 3 ]
+println a
+a += 4
+println a
+println a.tail()
+println a.tail()
+b = a.pop()
+println b
+println a
+println a.size()

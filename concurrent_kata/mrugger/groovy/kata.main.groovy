@@ -9,14 +9,16 @@ kata_sequence =  "87456481848451713265785181841515124617521496471297469154148163
 //                                                   617
 
 
-class MatchIterator
+class UnboundedMatchIterator
 {
   def sequence
   def position
+  def end_position
 
-  MatchIterator(seq, pos) {
+  UnboundedMatchIterator(seq, start, stop) {
     sequence = seq
-    position = pos
+    position = start
+    end_position = stop
   }
 
   def next() {
@@ -24,53 +26,45 @@ class MatchIterator
     return sequence.at(position--)
   }
 
-  def is_done() { return position < 0 }
+  def is_done() { return position < end_position }
 }
 
 
-class SequenceIterator
+class UnboundedSequenceIterator
 {
   def sequence
+  def match_map
   def int position
+  def int stop_position
+  def int match_stop_position
 
-  SequenceIterator(seq) {
+  UnboundedSequenceIterator(seq, map, start, stop, match_stop) {
     sequence = seq
-    position = sequence.size() - 1
+    match_map = map
+    position = start
+    stop_position = stop
+    match_stop_position = match_stop
   }
 
   def each(Closure yield) {
     def it = next()
     while (it != null) {
       def count = yield(it)
-      sequence.push(position+1, count)
+      push_match_count(count)
       it = next()
     }
   }
 
   def next() {
     if (is_done()) return null
-    return new MatchIterator(sequence, position--)
+    return new UnboundedMatchIterator(sequence, position--, match_stop_position)
   }
 
-  def is_done() { return position < 0 }
-}
+  def is_done() { return position < stop_position }
 
-
-class StringSequencer
-{
-  def sequence_string
-
-  StringSequencer(string) {
-    sequence_string = string
-    match_count = 0
-  }
-
-  def size() {
-    return sequence_string.size()
-  }
-
-  def at(idx) {
-    return ((int) sequence_string[idx]) - 48
+  def push_match_count(int count)
+  {
+    if (count) match_map.push(position+1)
   }
 }
 
@@ -79,25 +73,15 @@ class UnboundedStringSequencer
 {
   def sequence_string
   def int total_sequence_size
-  def int match_count
 
   UnboundedStringSequencer(string, total_size) {
     sequence_string = string
     total_sequence_size = total_size
   }
 
-  def size() {
-    return total_sequence_size
-  }
-
-  synchronized def at(idx) {
+  def at(idx) {
     def sidx = idx % sequence_string.size()
     return ((int) sequence_string[sidx]) - 48
-  }
-
-  synchronized def push(position, count)
-  {
-    if (count > 0) match_count++
   }
 }
 
@@ -122,28 +106,23 @@ determine_match_count = { iterator ->
   return sum == value ? count : 0;
 }
 
-//str = new String(kata_sequence)
-str = new UnboundedStringSequencer(kata_sequence, 700000)
 
+THREAD_COUNT = 4
+SEQUENCE_LENGTH = 10000000
+
+//str = new String(kata_sequence)
+str = new UnboundedStringSequencer(kata_sequence, SEQUENCE_LENGTH)
+
+iterator_pool = []
 thread_pool = []
-for (a = 0; a < 4; a++) {
-  sit = new SequenceIterator(str)
+for (a = 0; a < THREAD_COUNT; a++) {
+  ArrayList<Integer> map = new ArrayList<Integer>()
+  def sit = new UnboundedSequenceIterator(str, map, SEQUENCE_LENGTH-1, 0, 0)
+  iterator_pool.push(sit)
   t = Thread.start { sit.each(determine_match_count) }
   thread_pool.push(t)
 }
 
 thread_pool.each { t -> t.join() }
 
-println "match count: ${str.match_count}"
-
-
-a = [ 1, 2, 3 ]
-println a
-a += 4
-println a
-println a.tail()
-println a.tail()
-b = a.pop()
-println b
-println a
-println a.size()
+iterator_pool.each { it -> println "stack size: ${it.match_map.size()}" }

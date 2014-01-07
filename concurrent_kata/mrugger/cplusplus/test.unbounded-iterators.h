@@ -2,22 +2,28 @@
 #define __TEST_UNBOUNDED_ITERATORS_H__
 
 
+#include <mutex>
 #include "interface.kata-iterable.h"
 
 
-/**** TestCharUnboundedIterator ***************************************************************************************/
+typedef std::pair<int, int> match_pair;
+typedef std::stack<match_pair> match_stack;
 
-class TestCharUnboundedIterator : public CharIterable
+
+/**** TestUnboundedCharIterator ***************************************************************************************/
+
+class TestUnboundedCharIterator : public CharIterable
 {
-private:
+public:
 
-  std::string &_sequence;
+  Sequencer *_sequence;
   int _current_position;
+  int _end_position;
 
 public:
 
-  TestCharUnboundedIterator(std::string &sequence, int start_position)
-  : _sequence(sequence), _current_position(start_position)
+  TestUnboundedCharIterator(Sequencer *sequence, int start, int end)
+  : _sequence(sequence), _current_position(start), _end_position(end)
   {}
 
 
@@ -26,35 +32,40 @@ public: /* CharIterable interface */
   virtual char next(void)
   {
     if (is_done()) return '\0';
-    return _sequence[_current_position-- % _sequence.length()] - '0';;
+    return _sequence->at(_current_position--);
   }
 
 
 private:
 
   bool is_done(void)
-  { return _current_position < 0; }
+  { return _current_position < _end_position; }
 
 };
 
 
-/**** TestSequenceUnboundedIterator ***********************************************************************************/
+/**** TestUnboundedSequenceIterator ***********************************************************************************/
 
-class TestSequenceUnboundedIterator : public SequenceIterable
+class TestUnboundedSequenceIterator : public SequenceIterable
 {
-private:
+public:
 
-  std::string &_sequence;
-  solution_stack *_stack;
+  std::stack<match_pair> *_stack;
+
+  Sequencer *_sequence;
 
   int _current_position;
+  int _end_position;
+  int _match_end;
 
 public:
 
-  TestSequenceUnboundedIterator(std::string &sequence, int replication_count, solution_stack *stack)
+  TestUnboundedSequenceIterator(Sequencer *sequence, std::stack<match_pair> *stack, int start, int end, int match_end)
   : _sequence(sequence),
     _stack(stack),
-    _current_position(sequence.length() * replication_count - 1)
+    _current_position(start),
+    _end_position(end),
+    _match_end(match_end)
   {}
 
 
@@ -75,26 +86,53 @@ public: /* KataIterable interface */
 private:
 
   bool is_done(void)
-  { return _current_position < 0; }
+  { return _current_position < _end_position; }
 
 
   CharIterable *next(void)
   {
     if (is_done()) return NULL;
-    return new TestCharUnboundedIterator(_sequence, _current_position--);
+    return new TestUnboundedCharIterator(_sequence, _current_position--, _match_end);
   }
 
 
   void push_match_count(int count)
   {
     if (count)
-    {
-      const char *pos = &(_sequence.c_str()[_current_position+1]);
-      _stack->push(solution_pair(pos, count));
-    }
+      _stack->push(match_pair(_current_position+1, count));
   }
 
 };
 
+
+/**** TestSequenceUnboundedIterator ***********************************************************************************/
+
+class TestUnboundedSequencer : public Sequencer
+{
+public:
+
+  std::string _sequence;
+  int _total_sequence_size;
+
+  std::mutex _mtx;
+  std::stack<match_pair> _stack;
+
+  TestUnboundedSequencer(std::string string, int replication_count)
+  : _sequence(string), _total_sequence_size(string.length() * replication_count)
+  {}
+
+public: /* Sequencer interface */
+
+  virtual char at(int idx)
+  { return _sequence[idx % _sequence.length()] - '0'; }
+
+
+  virtual void push_match(int idx, int count)
+  {
+    std::lock_guard<std::mutex> lck(_mtx);
+    _stack.push(match_pair(idx, count));
+  }
+
+};
 
 #endif  // __KATA_UNBOUNDED_ITERATORS_H__

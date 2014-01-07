@@ -35,6 +35,16 @@ public:
 };
 
 
+class Sequencer
+{
+public:
+
+  virtual char at(int idx) = 0;
+  virtual void push_match(int idx, int count) = 0;
+  
+};
+
+
 class StreamIterable
 {
 public:

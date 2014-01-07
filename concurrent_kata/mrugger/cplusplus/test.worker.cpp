@@ -82,25 +82,48 @@ static void test_find_solution_two_blocks(void)
 }
 
 
-static void test_find_solution_with_unbounded(int thread_count)
+static std::thread *create_iterator(std::queue<std::unique_ptr<TestUnboundedSequenceIterator>> *queue,
+                                    Sequencer *seq, int start, int stop, int match_stop)
+{
+  match_stack *stack = new match_stack();
+  TestUnboundedSequenceIterator *it = new TestUnboundedSequenceIterator(seq, stack, start, stop, match_stop);
+  queue->push(std::unique_ptr<TestUnboundedSequenceIterator>(it));
+  std::thread *thread(new std::thread(KataWorker::find_solutions, it));
+  return thread;
+}
+
+
+static void test_find_solution_with_unbounded(int thread_count, int sequence_size)
 {
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
+  int block_size = sequence_size / thread_count;
+
+  TestUnboundedSequencer sequencer(kata_sequence, sequence_size);
+  std::queue<std::unique_ptr<TestUnboundedSequenceIterator>> queue;
   std::queue<std::unique_ptr<std::thread>> thread_pool;
 
-  for (int a = 0; a < thread_count; a++)
+  thread_pool.push(std::unique_ptr<std::thread>(create_iterator(&queue, &sequencer, block_size-1, 0, 0)));
+
+  for (int a = 1; a < thread_count; a++)
   {
-    solution_stack *stack = new solution_stack();
-    TestSequenceUnboundedIterator *it = new TestSequenceUnboundedIterator(kata_sequence, 2500000, stack);
-    std::thread *thread(new std::thread(KataWorker::find_solutions, it));
-    thread_pool.push(std::unique_ptr<std::thread>(thread));
+    int start       = (a+1) * block_size - 1;
+    int stop        = a * block_size;
+    int match_stop  = stop - 8;
+    thread_pool.push(std::unique_ptr<std::thread>(create_iterator(&queue, &sequencer, start, stop, match_stop)));
   }
 
   while (thread_pool.size() > 0)
   {
     thread_pool.front()->join();
     thread_pool.pop();
+  }
+
+  while (queue.size() > 0)
+  {
+    printf("stack size: %lu\n", queue.front()->_stack->size());
+    queue.pop();
   }
 
   std::cout << prefix << "complete\n";
@@ -114,7 +137,7 @@ void test_worker(argument_map *map)
 
   //test_find_solution_one_block();
   //test_find_solution_two_blocks();
-  test_find_solution_with_unbounded(4);
+  test_find_solution_with_unbounded(4, 70 * 1000000 * 5);
 
   std::cout << prefix << "complete\n";
 }

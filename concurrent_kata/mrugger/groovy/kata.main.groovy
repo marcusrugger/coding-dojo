@@ -31,7 +31,7 @@ class MatchIterator
 class SequenceIterator
 {
   def sequence
-  def position
+  def int position
 
   SequenceIterator(seq) {
     sequence = seq
@@ -42,7 +42,7 @@ class SequenceIterator
     def it = next()
     while (it != null) {
       def count = yield(it)
-      //if (count > 0) print "${(position+1)}, "
+      sequence.push(position+1, count)
       it = next()
     }
   }
@@ -62,6 +62,7 @@ class StringSequencer
 
   StringSequencer(string) {
     sequence_string = string
+    match_count = 0
   }
 
   def size() {
@@ -77,7 +78,8 @@ class StringSequencer
 class UnboundedStringSequencer
 {
   def sequence_string
-  def total_sequence_size
+  def int total_sequence_size
+  def int match_count
 
   UnboundedStringSequencer(string, total_size) {
     sequence_string = string
@@ -88,9 +90,14 @@ class UnboundedStringSequencer
     return total_sequence_size
   }
 
-  def at(idx) {
+  synchronized def at(idx) {
     def sidx = idx % sequence_string.size()
     return ((int) sequence_string[sidx]) - 48
+  }
+
+  synchronized def push(position, count)
+  {
+    if (count > 0) match_count++
   }
 }
 
@@ -100,7 +107,7 @@ class UnboundedStringSequencer
 
 
 
-match_count = { iterator ->
+determine_match_count = { iterator ->
   def sum   = 0
   def count = 0
   def value = iterator.next()
@@ -116,16 +123,18 @@ match_count = { iterator ->
 }
 
 //str = new String(kata_sequence)
-str = new UnboundedStringSequencer(kata_sequence, 1000000)
+str = new UnboundedStringSequencer(kata_sequence, 700000)
 
 thread_pool = []
 for (a = 0; a < 4; a++) {
   sit = new SequenceIterator(str)
-  t = Thread.start { sit.each(match_count) }
+  t = Thread.start { sit.each(determine_match_count) }
   thread_pool.push(t)
 }
 
 thread_pool.each { t -> t.join() }
+
+println "match count: ${str.match_count}"
 
 
 a = [ 1, 2, 3 ]

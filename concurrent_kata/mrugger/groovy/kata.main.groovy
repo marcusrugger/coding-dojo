@@ -2,11 +2,16 @@
 class UnboundedMatchIterator
 {
   def sequence
-  def position
-  def end_position
+  def int position
+  def int end_position
 
-  UnboundedMatchIterator(seq, start, stop) {
+  UnboundedMatchIterator(seq) {
     sequence = seq
+    position = -1
+    end_position = 0
+  }
+
+  def reset(int start, int stop) {
     position = start
     end_position = stop
   }
@@ -27,6 +32,7 @@ class UnboundedSequenceIterator
   def int position
   def int stop_position
   def int match_stop_position
+  def UnboundedMatchIterator match_iterator
 
   UnboundedSequenceIterator(seq, map, start, stop, match_stop) {
     sequence = seq
@@ -34,6 +40,7 @@ class UnboundedSequenceIterator
     position = start
     stop_position = stop
     match_stop_position = match_stop
+    match_iterator = new UnboundedMatchIterator(seq)
   }
 
   def each(Closure yield) {
@@ -47,7 +54,8 @@ class UnboundedSequenceIterator
 
   def next() {
     if (is_done()) return null
-    return new UnboundedMatchIterator(sequence, position--, match_stop_position)
+    match_iterator.reset(position--, match_stop_position)
+    return match_iterator
   }
 
   def is_done() { return position < stop_position }

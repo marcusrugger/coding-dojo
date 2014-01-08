@@ -30,23 +30,25 @@ end
 
 puts "Starting test..."
 
-THREAD_COUNT = 4
-SEQUENCE_LENGTH = 10000000
+THREAD_COUNT = 2
+SEQUENCE_LENGTH = 1000000
 
 thread_pool = []
 iterator_pool = []
 
 sequencer = KataUnboundedSequencer.new(kata_sequence, SEQUENCE_LENGTH)
 
-for a in 1..THREAD_COUNT
-  match_map = []
-  iterator = KataUnboundedSequenceIterator.new(sequencer, match_map, SEQUENCE_LENGTH-1, 0, 0)
-  iterator_pool << iterator
-  thread_pool << Thread.new { iterator.iterate! { |it| KataWorker.match_count(it) } }
-end
+THREAD_COUNT.times { |a|
+  match_stack = Array.new
+  it = KataUnboundedSequenceIterator.new(a, sequencer, match_stack, SEQUENCE_LENGTH-1, 0, 0)
+  iterator_pool << it
+  thread_pool << Thread.new { KataWorker.find_matches(it) }
+}
 
+puts "Joining threads...#{thread_pool.size}"
 thread_pool.each { |t| t.join }
 
-iterator_pool.each { |it| puts "stack size: #{iterator.match_map.size}"}
+puts "iterator_pool count: #{iterator_pool.size}"
+iterator_pool.each { |it| puts "stack size: #{it.match_map.size}"}
 
 puts "All done."

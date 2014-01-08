@@ -115,7 +115,7 @@ class KataUnboundedSequencer : public Sequencer
 {
 public:
 
-  std::string _sequence;
+  const char *_sequence;
   int _sequence_length;
   int _total_sequence_size;
 
@@ -123,7 +123,7 @@ public:
   std::stack<match_pair> _stack;
 
   KataUnboundedSequencer(std::string &string, int replication_count)
-  : _sequence(string),
+  : _sequence(string.c_str()),
     _sequence_length(string.length()),
     _total_sequence_size(string.length() * replication_count)
   {}

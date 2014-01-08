@@ -117,7 +117,7 @@ void test_worker(argument_map *map)
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  test_find_solution_with_no_overap(4, 10000000);
+  test_find_solution_with_no_overap(5, 1000000000);
 
   std::cout << prefix << "complete\n";
 }

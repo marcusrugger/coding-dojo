@@ -5,10 +5,15 @@ class KataUnboundedCharIterator
   @current_position
   @end_position
 
-  def initialize(sequence, start_position, end_position)
+  def initialize(sequence)
     @sequence = sequence
-    @current_position = start_position
-    @end_position = end_position
+    @current_position = -1
+    @end_position = 0
+  end
+
+  def reset(start, stop)
+    @current_position = start
+    @end_position = stop
   end
 
   def each
@@ -36,6 +41,8 @@ class KataUnboundedSequenceIterator
   @sequence
   @match_map
 
+  @match_iterator
+
   @current_position
   @end_position
   @match_end
@@ -46,6 +53,7 @@ class KataUnboundedSequenceIterator
     @end_position = end_position
     @current_position = start_position
     @match_end = match_end
+    @match_iterator = KataUnboundedCharIterator.new(@sequence)
   end
 
   def iterate!
@@ -61,9 +69,9 @@ class KataUnboundedSequenceIterator
 
   def next
     return nil if is_done
-    iterator = KataUnboundedCharIterator.new(@sequence, @current_position, @match_end)
+    @match_iterator.reset(@current_position, @match_end)
     @current_position -= 1
-    return iterator
+    return @match_iterator
   end
 
   def push_match(count)

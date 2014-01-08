@@ -31,7 +31,7 @@ end
 puts "Starting test..."
 
 THREAD_COUNT = 4
-SEQUENCE_LENGTH = 1000000
+SEQUENCE_LENGTH = 10000000
 
 thread_pool = []
 iterator_pool = []

@@ -112,13 +112,10 @@ public: /* KataIterable interface */
 
   void for_each(std::function<int(KataUnboundedCharIterator *)> yield)
   {
-    do
-    {
-      _char_iterator->reset(_current_position--, _match_end);
-      int count = yield(_char_iterator.get());
-      push_match_count(count);
-    }
-    while (!is_done());
+    KataUnboundedCharIterator *it;
+
+    while (it = next())
+      push_match_count(yield(it));
   }
 
 
@@ -126,6 +123,14 @@ private:
 
   bool is_done(void)
   { return _current_position < _end_position; }
+
+
+  KataUnboundedCharIterator *next(void)
+  {
+    if (is_done()) return NULL;
+    _char_iterator->reset(_current_position--, _match_end);
+    return _char_iterator.get();
+  }
 
 
   void push_match_count(int count)

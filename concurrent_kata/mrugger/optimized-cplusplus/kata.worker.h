@@ -19,19 +19,17 @@ public: /* Types */
   {
     assert(it != NULL);
 
-    int sum     = 0;
     int count   = 0;
     char value  = it->next();
 
-    char c = it->next();
-    while (c != '\0' && sum < value)
+    char c;
+    while ((value > 0) && (c = it->next()))
     {
-      sum += c;
+      value -= c;
       count++;
-      c = it->next();
     }
 
-    return (sum == value) ? count : 0;
+    return (value == 0) ? count : 0;
   }
 
 };

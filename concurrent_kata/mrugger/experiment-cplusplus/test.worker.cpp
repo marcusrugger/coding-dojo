@@ -35,27 +35,22 @@ static void check_stack(match_stack &stack, int expected_position, int expected_
 typedef ThreadsParallelizer<KataUnboundedSequencer, std::function<match_stack *(SequenceIterable *)>, match_stack> Parallelizer;
 
 
-static void test_find_solution_with_no_overap(int thread_count, int sequence_size)
+static void test_find_solution_with_no_overap(int sequence_size)
 {
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
   KataUnboundedSequencer sequencer(kata_sequence, sequence_size);
 
-  Parallelizer parallelizer(4);
+  Parallelizer parallelizer;
+
   match_queue *queue;
-  queue = (match_queue *) parallelizer.parallelize(&sequencer, KataWorker::find_solutions);
+  queue = (match_queue *) parallelizer.run(&sequencer, KataWorker::find_matches);
 
   while (!queue->empty())
   {
     match_stack *stack = queue->front().get();
     printf("map size: %lu\n", stack->size());
-    while (!stack->empty())
-    {
-      match_pair p(stack->top());
-      printf("position: %d, count: %d\n", p.first, p.second);
-      stack->pop();
-    }
     queue->pop();
   }
 
@@ -70,7 +65,10 @@ void test_worker(argument_map *map)
   const std::string prefix(std::string("*** ") + __FILE__ + ": " + __FUNCTION__ + ": ");
   std::cout << prefix << "begin\n";
 
-  test_find_solution_with_no_overap(1, 1);
+  unsigned concurrent_threads_supported = std::thread::hardware_concurrency();
+  printf("Number of concurrent threads supported: %u\n", concurrent_threads_supported);
+
+  test_find_solution_with_no_overap(1000000);
 
   std::cout << prefix << "complete\n";
 }

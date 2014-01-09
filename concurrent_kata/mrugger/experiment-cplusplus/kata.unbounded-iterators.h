@@ -102,10 +102,7 @@ private:
   void push_match_count(match_stack *stack, int count)
   {
     if (count)
-    {
-      printf("pushing match: %d, %d\n", _current_position+1, count);
       stack->push(match_pair(_current_position+1, count));
-    }
   }
 
 };
@@ -164,8 +161,6 @@ public: /* Sequencer interface */
 
   virtual match_stack *for_each(std::function<match_stack *(SequenceIterable *)> yield)
   {
-    printf("for_each: %d, %d\n", _range.first, _range.second);
-
     std::unique_ptr<SequenceIterable>
     it(new KataUnboundedSequenceIterator(this,
                                          _range.second,

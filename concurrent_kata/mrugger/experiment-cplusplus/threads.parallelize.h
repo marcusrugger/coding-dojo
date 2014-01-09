@@ -57,12 +57,12 @@ public:
   const int _core_count;
   const int _parallelizer_depth;
 
-  ThreadsParallelizer(int core_count)
-  : _core_count(core_count),
-    _parallelizer_depth((int) (std::log2((double) core_count)))
+  ThreadsParallelizer(void)
+  : _core_count(std::thread::hardware_concurrency()),
+    _parallelizer_depth((int) (std::log2((double) _core_count)))
   {}
 
-  std::queue<RV *> *parallelize(IT *seq, PARM yield)
+  std::queue<RV *> *run(IT *seq, PARM yield)
   {
     std::queue<RV *> *queue = new std::queue<RV *>();
     std::queue<std::unique_ptr<ThreadsRun<IT, PARM, RV>>> thread_pool;

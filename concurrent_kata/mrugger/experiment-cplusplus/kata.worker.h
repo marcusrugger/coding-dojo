@@ -9,8 +9,7 @@ class KataWorker
 {
 public: /* Types */
 
-  static match_queue *find_sequence_solutions(Sequencer *sequencer);
-  static match_stack *find_solutions(SequenceIterable *it);
+  static match_stack *find_matches(SequenceIterable *it);
   static int match_count(CharIterable *it);
 
 };

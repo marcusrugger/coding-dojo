@@ -2,14 +2,7 @@
 #include "kata.worker.h"
 
 
-
-match_queue *KataWorker::find_sequence_solutions(Sequencer *sequencer)
-{
-  return NULL; //sequencer->for_each(find_solutions);
-}
-
-
-match_stack *KataWorker::find_solutions(SequenceIterable *sequence_it)
+match_stack *KataWorker::find_matches(SequenceIterable *sequence_it)
 {
   return sequence_it->for_each(match_count);
 }

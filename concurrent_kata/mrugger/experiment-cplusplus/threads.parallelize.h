@@ -14,24 +14,12 @@ class ThreadsRun
 {
 public:
 
-  IT *_seq;
-  PARM _yield;
-  pthread_t _thread;
-
-
-  ThreadsRun(IT *seq, PARM yield)
-  : _seq(seq),
-    _yield(yield)
-  {}
-
-
-  void run(void)
+  static ThreadsRun *create(IT *seq, PARM yield)
   {
-    pthread_create(&_thread, NULL, moronic_pthread_crap, static_cast<void *>(this));
+    return new ThreadsRun(seq, yield);
   }
 
-
-  match_stack *join(void)
+  RV *join(void)
   {
     void *p;
     pthread_join(_thread, &p);
@@ -39,11 +27,28 @@ public:
   }
 
 
-  static void *moronic_pthread_crap(void *ptr)
+private:
+
+  IT *_seq;
+  PARM _yield;
+  pthread_t _thread;
+
+  ThreadsRun(IT *seq, PARM yield)
+  : _seq(seq),
+    _yield(yield)
+  {
+    pthread_create(&_thread, NULL, pthread_callback, static_cast<void *>(this));
+  }
+
+  void *callback(void)
+  {
+    return _seq->for_each(_yield);
+  }
+
+  static void *pthread_callback(void *ptr)
   {
     ThreadsRun *obj = static_cast<ThreadsRun *>(ptr);
-    RV *stack = obj->_seq->for_each(obj->_yield);
-    return stack;
+    return obj->callback();
   }
 
 };
@@ -98,8 +103,7 @@ private:
     }
     else
     {
-      ThreadsRun<IT, PARM, RV> *t = new ThreadsRun<IT, PARM, RV>((IT *) seq, yield);
-      t->run();
+      ThreadsRun<IT, PARM, RV> *t = ThreadsRun<IT, PARM, RV>::create((IT *) seq, yield);
       thread_pool->push(std::unique_ptr<ThreadsRun<IT, PARM, RV>>(t));
     }
   }

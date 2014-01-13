@@ -9,26 +9,53 @@
 #include "sequencer.h"
 
 
-accumulator match_count(accumulator acc, const int count, const char_iterator &char_it, const char val)
+int match_count(const int count, const char_iterator &char_it, const char val)
 {
   const char new_val = val - char_it();
 
   if (new_val > 0 && char_it.is_more())
-    return match_count(acc, count+1, char_it.next(), new_val);
+    return match_count(count+1, char_it.next(), new_val);
   else if (new_val == 0)
-    acc.push_back(match_pair(char_it.to_i(), count+1));
-
-  return acc;
+    return count+1;
+  else
+    return 0;
 }
 
 
-accumulator for_each(accumulator acc, const sequence_iterator &s_it, const std::function<accumulator(accumulator &, const char_iterator &)> fn)
+accumulator for_each(const accumulator acc, const sequence_iterator &s_it, const std::function<int(const char_iterator &)> fn)
 {
-  accumulator rv = fn(acc, s_it());
-  if (s_it.is_more()) 
-    return for_each(rv, s_it.next(), fn);
+  int cnt = fn(s_it());
+  if (cnt)
+  {
+    accumulator new_acc = acc;
+    new_acc.push_back(match_pair(s_it.to_i(), cnt));
+
+    if (s_it.is_more()) 
+      return for_each(new_acc, s_it.next(), fn);
+    else
+      return new_acc;
+  }
   else
-    return rv;
+  {
+    if (s_it.is_more()) 
+      return for_each(acc, s_it.next(), fn);
+    else
+      return acc;
+  }
+}
+
+
+accumulator adsffor_each(const accumulator acc, const sequence_iterator &s_it, const std::function<int(const char_iterator &)> fn)
+{
+  accumulator new_acc = acc;
+
+  int cnt = fn(s_it());
+  if (cnt) new_acc.push_back(match_pair(s_it.to_i(), cnt));
+
+  if (s_it.is_more()) 
+    return for_each(new_acc, s_it.next(), fn);
+  else
+    return new_acc;
 }
 
 
@@ -49,11 +76,11 @@ void split_sequence(accumulator &acc, const sequencer &seq, const int count)
   else
   {
     sequence_iterator seq_it = seq.get_sequence_iterator();
-    accumulator seq_acc = for_each(acc, seq_it, [](accumulator acc, const char_iterator &char_it) -> accumulator {
+    accumulator seq_acc = for_each(acc, seq_it, [](const char_iterator &char_it) -> int {
       if (char_it.is_more())
-        return match_count(acc, 1, char_it.next(), char_it());
+        return match_count(1, char_it.next(), char_it());
       else
-        return acc;
+        return 0;
     });
     acc.insert(acc.end(), seq_acc.begin(), seq_acc.end());
   }
@@ -62,7 +89,7 @@ void split_sequence(accumulator &acc, const sequencer &seq, const int count)
 
 static void print_match(const match_pair p, const sequencer &seq)
 {
-  const sequencer block = seq.clone_block(p.first, p.second);
+  const sequencer block = seq.clone_block(p.first-p.second+1, p.second);
   printf("Position: %3d, characters: %d, %s\n", p.first, p.second, block.to_s().c_str());
 }
 

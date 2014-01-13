@@ -9,20 +9,26 @@
 #include "sequencer.h"
 
 
-void match_count(accumulator &acc, const int count, const char_iterator &char_it, const char val)
+accumulator match_count(accumulator acc, const int count, const char_iterator &char_it, const char val)
 {
   const char new_val = val - char_it();
+
   if (new_val > 0 && char_it.is_more())
-    match_count(acc, count+1, char_it.next(), new_val);
+    return match_count(acc, count+1, char_it.next(), new_val);
   else if (new_val == 0)
     acc.push_back(match_pair(char_it.to_i(), count+1));
+
+  return acc;
 }
 
 
-void for_each(accumulator &acc, const sequence_iterator &s_it, const std::function<void(accumulator &, const char_iterator &)> fn)
+accumulator for_each(accumulator acc, const sequence_iterator &s_it, const std::function<accumulator(accumulator &, const char_iterator &)> fn)
 {
-  fn(acc, s_it());
-  if (s_it.is_more()) for_each(acc, s_it.next(), fn);
+  accumulator rv = fn(acc, s_it());
+  if (s_it.is_more()) 
+    return for_each(rv, s_it.next(), fn);
+  else
+    return rv;
 }
 
 
@@ -43,9 +49,13 @@ void split_sequence(accumulator &acc, const sequencer &seq, const int count)
   else
   {
     sequence_iterator seq_it = seq.get_sequence_iterator();
-    for_each(acc, seq_it, [](accumulator &acc, const char_iterator &char_it) -> int {
-      if (char_it.is_more()) match_count(acc, 1, char_it.next(), char_it());
+    accumulator seq_acc = for_each(acc, seq_it, [](accumulator acc, const char_iterator &char_it) -> accumulator {
+      if (char_it.is_more())
+        return match_count(acc, 1, char_it.next(), char_it());
+      else
+        return acc;
     });
+    acc.insert(acc.end(), seq_acc.begin(), seq_acc.end());
   }
 }
 
